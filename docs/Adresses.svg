@@ -1,0 +1,100 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<svg width="680" height="220" view_box="0 0 680 220"
+xmlns="http://www.w3.org/2000/svg"
+xmlns:link="http://www.w3.org/1999/xlink">\n\n<desc>Généré par Mocodo 2.3.7 le Mon, 07 Dec 2020 07:50:09</desc>
+
+<rect id="frame" x="0" y="0" width="680" height="220" fill="#ffffbf" stroke="none" stroke-width="0"/>
+
+<!-- Association envoie -->
+<line x1="67" y1="77" x2="185" y2="77" stroke="#f46d43" stroke-width="2"/>
+<text x="130" y="69.0" fill="#3288bd" font-family="Verdana" font-size="12">0,N</text>
+<line x1="297" y1="77" x2="185" y2="77" stroke="#f46d43" stroke-width="2"/>
+<text x="219" y="94.0" fill="#3288bd" font-family="Verdana" font-size="12">1,1</text>
+<g id="association-envoie">
+	<path d="M 199 52 a 14 14 90 0 1 14 14 V 77 h -56 V 66 a 14 14 90 0 1 14 -14" fill="#fdae61" stroke="#fdae61" stroke-width="0"/>
+	<path d="M 213 77.0 v 11 a 14 14 90 0 1 -14 14 H 171 a 14 14 90 0 1 -14 -14 V 77.0 H 56" fill="#fee08b" stroke="#fee08b" stroke-width="0"/>
+	<rect x="157" y="52" width="56" height="50" fill="none" rx="14" stroke="#f46d43" stroke-width="2"/>
+	<line x1="157" y1="77" x2="213" y2="77" stroke="#f46d43" stroke-width="1"/>
+	<text x="164" y="69.7" fill="#000000" font-family="Verdana" font-size="12">envoie</text>
+</g>
+
+<!-- Association reçoit -->
+<line x1="67" y1="77" x2="297" y2="186" stroke="#f46d43" stroke-width="2"/>
+<text x="130" y="100.196384785" fill="#3288bd" font-family="Verdana" font-size="12">0,N</text>
+<line x1="297" y1="77" x2="297" y2="186" stroke="#f46d43" stroke-width="2"/>
+<text x="302.0" y="153" fill="#3288bd" font-family="Verdana" font-size="12">1,1</text>
+<g id="association-reçoit">
+	<path d="M 308 161 a 14 14 90 0 1 14 14 V 186 h -50 V 175 a 14 14 90 0 1 14 -14" fill="#fdae61" stroke="#fdae61" stroke-width="0"/>
+	<path d="M 322 186.0 v 11 a 14 14 90 0 1 -14 14 H 286 a 14 14 90 0 1 -14 -14 V 186.0 H 50" fill="#fee08b" stroke="#fee08b" stroke-width="0"/>
+	<rect x="272" y="161" width="50" height="50" fill="none" rx="14" stroke="#f46d43" stroke-width="2"/>
+	<line x1="272" y1="186" x2="322" y2="186" stroke="#f46d43" stroke-width="1"/>
+	<text x="279" y="178.7" fill="#000000" font-family="Verdana" font-size="12">reçoit</text>
+</g>
+
+<!-- Association correspond -->
+<line x1="297" y1="77" x2="422" y2="77" stroke="#f46d43" stroke-width="2"/>
+<text x="354" y="94.0" fill="#3288bd" font-family="Verdana" font-size="12">0,1</text>
+<line x1="583" y1="77" x2="422" y2="77" stroke="#f46d43" stroke-width="2"/>
+<text x="469" y="94.0" fill="#3288bd" font-family="Verdana" font-size="12">1,1</text>
+<g id="association-correspond">
+	<path d="M 449 52 a 14 14 90 0 1 14 14 V 77 h -82 V 66 a 14 14 90 0 1 14 -14" fill="#fdae61" stroke="#fdae61" stroke-width="0"/>
+	<path d="M 463 77.0 v 11 a 14 14 90 0 1 -14 14 H 395 a 14 14 90 0 1 -14 -14 V 77.0 H 82" fill="#fee08b" stroke="#fee08b" stroke-width="0"/>
+	<rect x="381" y="52" width="82" height="50" fill="none" rx="14" stroke="#f46d43" stroke-width="2"/>
+	<line x1="381" y1="77" x2="463" y2="77" stroke="#f46d43" stroke-width="1"/>
+	<text x="388" y="69.7" fill="#000000" font-family="Verdana" font-size="12">correspond</text>
+</g>
+
+<!-- Entity EXPEDITION -->
+<g id="entity-EXPEDITION">
+	<g id="frame-EXPEDITION">
+		<rect x="495" y="26" width="176" height="25" fill="#abdda4" stroke="#abdda4" stroke-width="0"/>
+		<rect x="495" y="51.0" width="176" height="77" fill="#e6f598" stroke="#e6f598" stroke-width="0"/>
+		<rect x="495" y="26" width="176" height="102" fill="none" stroke="#66c2a5" stroke-width="2"/>
+		<line x1="495" y1="51" x2="671" y2="51" stroke="#66c2a5" stroke-width="1"/>
+	</g>
+	<text x="544" y="43.7" fill="#000000" font-family="Verdana" font-size="12">EXPEDITION</text>
+	<text x="500" y="68.7" fill="#000000" font-family="Verdana" font-size="12">nom livreur</text>
+	<line x1="500" y1="71" x2="570" y2="71" stroke="#000000" stroke-width="1"/>
+	<text x="500" y="85.8" fill="#000000" font-family="Verdana" font-size="12">plaque immatriculation</text>
+	<text x="500" y="102.8" fill="#000000" font-family="Verdana" font-size="12">date heure départ entrepôt</text>
+	<text x="500" y="119.8" fill="#000000" font-family="Verdana" font-size="12">date heure retour entrepot</text>
+</g>
+
+<!-- Entity ADRESSE -->
+<g id="entity-ADRESSE">
+	<g id="frame-ADRESSE">
+		<rect x="9" y="9" width="116" height="25" fill="#abdda4" stroke="#abdda4" stroke-width="0"/>
+		<rect x="9" y="34.0" width="116" height="111" fill="#e6f598" stroke="#e6f598" stroke-width="0"/>
+		<rect x="9" y="9" width="116" height="136" fill="none" stroke="#66c2a5" stroke-width="2"/>
+		<line x1="9" y1="34" x2="125" y2="34" stroke="#66c2a5" stroke-width="1"/>
+	</g>
+	<text x="38" y="26.7" fill="#000000" font-family="Verdana" font-size="12">ADRESSE</text>
+	<text x="14" y="51.7" fill="#000000" font-family="Verdana" font-size="12">référence interne</text>
+	<line x1="14" y1="54" x2="119" y2="54" stroke="#000000" stroke-width="1"/>
+	<text x="14" y="68.7" fill="#000000" font-family="Verdana" font-size="12">nom</text>
+	<text x="14" y="85.8" fill="#000000" font-family="Verdana" font-size="12">ligne principale</text>
+	<text x="14" y="102.8" fill="#000000" font-family="Verdana" font-size="12">complément</text>
+	<text x="14" y="119.8" fill="#000000" font-family="Verdana" font-size="12">code postal</text>
+	<text x="14" y="136.8" fill="#000000" font-family="Verdana" font-size="12">ville</text>
+</g>
+
+<!-- Entity COLIS -->
+<g id="entity-COLIS">
+	<g id="frame-COLIS">
+		<rect x="245" y="18" width="104" height="25" fill="#abdda4" stroke="#abdda4" stroke-width="0"/>
+		<rect x="245" y="43.0" width="104" height="93" fill="#e6f598" stroke="#e6f598" stroke-width="0"/>
+		<rect x="245" y="18" width="104" height="118" fill="none" stroke="#66c2a5" stroke-width="2"/>
+		<line x1="245" y1="43" x2="349" y2="43" stroke="#66c2a5" stroke-width="1"/>
+	</g>
+	<text x="277" y="35.7" fill="#000000" font-family="Verdana" font-size="12">COLIS</text>
+	<text x="250" y="60.7" fill="#000000" font-family="Verdana" font-size="12">numéro interne</text>
+	<line x1="250" y1="63" x2="344" y2="63" stroke="#000000" stroke-width="1"/>
+	<text x="250" y="77.8" fill="#000000" font-family="Verdana" font-size="12">contenu</text>
+	<text x="250" y="94.8" fill="#000000" font-family="Verdana" font-size="12">poids</text>
+	<text x="250" y="111.8" fill="#000000" font-family="Verdana" font-size="12">volume</text>
+	<text x="250" y="128.8" fill="#000000" font-family="Verdana" font-size="12">valeur estimée</text>
+</g>
+</svg>

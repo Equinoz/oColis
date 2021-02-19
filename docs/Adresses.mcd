@@ -1,0 +1,8 @@
+ADRESSE: référence interne, nom, ligne principale, complément, code postal, ville
+envoie, 0N ADRESSE, 11 COLIS
+COLIS: numéro interne, contenu, poids, volume, valeur estimée
+correspond, 01 COLIS, 1N EXPEDITION
+EXPEDITION: nom livreur, plaque immatriculation, date heure départ entrepôt, date heure retour entrepot
+
+:
+reçoit, 0N ADRESSE, 11 COLIS
