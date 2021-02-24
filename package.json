@@ -1,0 +1,32 @@
+{
+  "name": "ocolis",
+  "version": "1.0.0",
+  "description": "management tool for transport company",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "import": "node data/import.js",
+    "debug": "node inspect index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Equinoz/oColis.git"
+  },
+  "author": "Julien Le Coz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Equinoz/oColis/issues"
+  },
+  "homepage": "https://github.com/Equinoz/oColis#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "faker": "^5.4.0",
+    "pg": "^8.5.1"
+  }
+}
