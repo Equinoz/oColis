@@ -17,7 +17,13 @@ const faker = require("faker"),
   await client.query('BEGIN');
 
   // Truncate tabless
-  await client.query('TRUNCATE TABLE "user", "place", "expedition", "package" RESTART IDENTITY');
+  await client.query('TRUNCATE TABLE "status", "user", "place", "expedition", "package" RESTART IDENTITY');
+
+  // Create new status entities
+  await client.query('INSERT INTO "status" ("name") VALUES (\'admin\'), (\'user\')');
+
+  // Create new users entities
+  await client.query('INSERT INTO "user" ("mail", "status_id", "password", "salt") VALUES (\'chuck.norris@gmail.com\', 1, \'$2b$10$DD3BBU98xmwWz.prK1b63OFohKNUuqIFV.HzoJooGR.v0/TDvTF46\', \'$2b$10$IfDLaAHnjr6UBP8p7L41Cu\'), (\'clark.kent@gmail.com\', 2, \'$2b$10$rIJMZzAkSDyN/4wbeDwM/.tRwnDNosNvErXeipbLeI0oKgO1JDIQu\', \'$2b$10$ZI/FsGgAbXbUYuPGxaBqy.\'), (\'bruce.wayne@gmail.com\', 2, \'$2b$10$lN6kjwXLlCBZ/fD59boEb.8kwEXdPBkHJna4/eSaXK9muq9wTEUA2\', \'$2b$10$qleNi9XjMV5js14jIaEse.\')');
 
   // Create new places entities
   const places = [];

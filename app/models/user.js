@@ -5,12 +5,16 @@ class User extends CoreModel {
   static tableName = "user";
 
   #mail;
+  #status_id;
   #password;
+  #salt;
 
   constructor (obj) {
     super(obj);
     this.#mail = obj.mail;
+    this.#status_id = obj.status_id;
     this.#password = obj.password;
+    this.#salt = obj.salt;
   }
 
   get mail() {
@@ -21,6 +25,14 @@ class User extends CoreModel {
     this.#mail = value;
   }
 
+  get status_id() {
+    return this.#status_id;
+  }
+
+  set status_id(value) {
+    this.#status_id = value;
+  }
+
   get password() {
     return this.#password;
   }
@@ -29,10 +41,18 @@ class User extends CoreModel {
     this.#password = value;
   }
 
+  get salt() {
+    return this.#salt;
+  }
+
+  set salt(value) {
+    this.#salt = value;
+  }
+
   async insert() {
     const preparedQuery = {
-      text: 'INSERT INTO "user" ("mail", "password") VALUES ($1, $2) RETURNING "id"',
-      values: [this.mail, this.password]
+      text: 'INSERT INTO "user" ("mail", "status_id", "password", "salt") VALUES ($1, $2, $3, $4) RETURNING "id"',
+      values: [this.mail, this.status_id, this.password, this.salt]
     };
 
     try {
@@ -47,8 +67,8 @@ class User extends CoreModel {
 
   async update() {
     const preparedQuery = {
-      text: 'UPDATE "user" SET ("mail", "password") = ($1, $2) WHERE "id"=$3',
-      values: [this.mail, this.password, this.id]
+      text: 'UPDATE "user" SET ("mail", "status_id", "password", "salt") = ($1, $2, $3, $4) WHERE "id"=$5',
+      values: [this.mail, this.status_id, this.password, this.salt, this.id]
     };
 
     try {

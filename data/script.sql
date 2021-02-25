@@ -1,14 +1,22 @@
 BEGIN;
 
-DROP TABLE IF EXISTS "user",
+DROP TABLE IF EXISTS "status",
+"user",
 "place",
 "expedition",
 "package";
 
+CREATE TABLE "status" (
+  "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  "name" text NOT NULL UNIQUE
+);
+
 CREATE TABLE "user" (
   "id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  "mail" text NOT NULL,
-  "password" text NOT NULL
+  "mail" text NOT NULL UNIQUE,
+  "status_id" int NOT NULL REFERENCES "status"(id),
+  "password" text NOT NULL,
+  "salt" text NOT NULL
 );
 
 CREATE TABLE "place" (
@@ -36,9 +44,9 @@ CREATE TABLE "package" (
   "weight" float NOT NULL,
   "volume" int NOT NULL,
   "worth" int NOT NULL,
-  "sender_id" int NOT NULL REFERENCES place(id),
-  "recipient_id" int NOT NULL REFERENCES place(id),
-  "expedition_id" int REFERENCES expedition(id)
+  "sender_id" int NOT NULL REFERENCES "place"(id),
+  "recipient_id" int NOT NULL REFERENCES "place"(id),
+  "expedition_id" int REFERENCES "expedition"(id)
 );
 
 COMMIT;
