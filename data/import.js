@@ -13,7 +13,7 @@ const faker = require("faker"),
 
   await client.connect();
 
-  // Transaction SQL
+  // SQL transaction
   await client.query('BEGIN');
 
   // Truncate tabless

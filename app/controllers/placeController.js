@@ -1,83 +1,85 @@
-//const { Place } = require("../models");
-
-const Place = require("../models/Place");
+const { Place } = require("../models");
 
 const placeController = {
-  getAllPlaces: async (req, res) => {
-    const places = await Place.findAll();
-    res.status(200).json({ data: places });
+  getAllPlaces: async (_, res, next) => {
+    try {
+      const places = await Place.findAll();
+
+      if (places.length < 1) {
+        next();
+      } else {
+        res.status(200).json({ data: places });
+      }
+    } catch (err) {
+      next(err);
+    }
   },
 
-  getPlaceById: async (req, res) => {
-    const placeId = parseInt(req.params.id, 10);
-    const place = await Place.findById(placeId);
-    res.status(200).json({ data: place });
+  getPlaceById: async (req, res, next) => {
+    try {
+      let placeId = parseInt(req.params.id, 10);
+      placeId = (isNaN(placeId)) ? null : placeId;
+      const place = await Place.findById(placeId);
+
+      if (place == undefined) {
+        next();
+      } else {
+        res.status(200).json({ data: place });
+      }
+    } catch (err) {
+      next(err);
+    }
   },
 
-  createPlace: async (req, res) => {
-    const place = new Place(req.body);
-    // méthode save plutôt que insert
-    const newPlaceId = await place.insert();
-    res.status(201).json({ data: newPlaceId });
+  createPlace: async (req, res, next) => {
+    try {
+      const place = new Place(req.body);
+      const newPlaceId = await place.insert();
+      res.status(201).json({ data: newPlaceId });
+    } catch (err) {
+      next(err);
+    }
   },
 
-  updatePlaceById: async (req, res) => {
-    const placeId = parseInt(req.params.id, 10);
-    const place = await Place.findById(placeId);
-    // Ici l'instanciation se fera avec les éléments de place plutôt que place directement, amélioré avec les data de req.body
-    // méthode save plutôt que insert
-    const updatedPlace = new Place(place);
-    const result = await updatedPlace.update(req.body);
-    res.status(200).json({ data: result });
+  updatePlaceById: async (req, res, next) => {
+    try {
+      let placeId = parseInt(req.params.id, 10);
+      placeId = (isNaN(placeId)) ? null : placeId;
+      let place = await Place.findById(placeId);
+
+      if (place == undefined) {
+        next();
+      } else {
+        // New data must be merged with old data before instantiation
+        place = { ...place, ...req.body };
+        const updatedPlace = new Place(place);
+        const result = await updatedPlace.update();
+        res.status(200).json({ data: { modified: result }});
+      }
+    } catch (err) {
+      next(err);
+    }
   },
 
-  deletePlaceById: async (req, res) => {
-    const placeId = parseInt(req.params.id, 10);
-    // const place = await Place.findById(placeId);
-    // // Ici on complète notre objet..
-    // place.update()
-    // res.status(200).json({ data: places });
-    res.send("ok")
+  deletePlaceById: async (req, res, next) => {
+    try {
+      let placeId = parseInt(req.params.id, 10);
+      placeId = (isNaN(placeId)) ? null : placeId;
+      let place = await Place.findById(placeId);
+
+      if (place == undefined) {
+        next();
+      } else {
+        // New data must be merged with old data before instantiation
+        place = { ...place, ...req.body };
+        const placeToDelete = new Place(place);
+        const result = await placeToDelete.delete();
+        res.status(200).json({ data: { deleted: result }});
+      }
+    } catch (err) {
+      next(err);
+    }
   }
 };
 
 module.exports = placeController;
-
-/*const Whatever = require('../models/whatever');
-const whateverController = {
-  // GET /whatevers
-  getAll: async (req, res) => {
-    res.json(await Whatever.findAll());
-  },
-  // GET /whatevers/:id
-  getOne: async (req, res) => {
-    Whatever.findOne(req.params.id)
-      .then(res.json.bind(res))
-      .catch(err => res.status(404).json(err.message));
-  },
-  // POST /whatevers
-  addOne: async (req, res) => {
-    const newOne = new Whatever(req.body);
-    await newOne.save(); // l'instance n'a pas d'id, un INSERT est exécuté
-    res.status(201).json(newOne);
-  },
-  // PATCH /whatevers/:id
-  editOne: async (req, res) => {
-    Whatever.findOne(req.params.id)
-      .catch(err => res.status(404).json(err.message))
-      .then(async theOne => {
-        theOne = {...theOne, ...req.body};
-        await theOne.save(); // vu que l'instance a un id, un UPDATE sera exécuté plutôt qu'un INSERT
-        res.json(theOne);
-      );
-  },
-  // DELETE /whatevers/:id
-  dropOne: async (req, res) => {
-    Whatever.find(req.params.id)
-      .then(async oldOne => {
-        await oldOne.delete();
-        res.status(204).json();
-      )
-      .catch(err => res.status(404).json(err.message));
-  }
-};*/
