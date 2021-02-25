@@ -3,9 +3,9 @@ const client = require('./pool');
 class CoreModel {
   static async findAll() {
     try {
-      const expeditions = await client.query(`SELECT * FROM "${this.tableName}"`);
+      const elements = await client.query(`SELECT * FROM "${this.tableName}"`);
 
-      return expeditions.rows;
+      return elements.rows;
     } catch(err) {
       throw err;
     }
@@ -13,9 +13,9 @@ class CoreModel {
 
   static async findById(id) {
     try {
-      const expedition = await client.query(`SELECT * FROM "${this.tableName}" WHERE "id"=$1`, [id]);
+      const element = await client.query(`SELECT * FROM "${this.tableName}" WHERE "id"=$1`, [id]);
 
-      return expedition.rows[0];
+      return element.rows[0];
     } catch(err) {
       throw err;
     }

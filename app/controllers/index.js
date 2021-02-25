@@ -1,7 +1,11 @@
 const placeController = require("./placeController"),
-      expeditionController = require("./expeditionController");
+      expeditionController = require("./expeditionController"),
+      packageController = require("./packageController"),
+      userController = require("./userController");
 
 module.exports = {
   placeController,
-  expeditionController
+  expeditionController,
+  packageController,
+  userController
 };

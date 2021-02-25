@@ -1,7 +1,11 @@
 const Place = require("./place"),
-      Expedition = require("./expedition");
+      Expedition = require("./expedition"),
+      Package = require("./package"),
+      User = require("./user");
 
 module.exports = {
   Place,
-  Expedition
+  Expedition,
+  Package,
+  User
 };
