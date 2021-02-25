@@ -1,5 +1,7 @@
-const placeController = require("./placeController");
+const placeController = require("./placeController"),
+      expeditionController = require("./expeditionController");
 
 module.exports = {
-  placeController
+  placeController,
+  expeditionController
 };

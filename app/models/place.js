@@ -1,27 +1,9 @@
-const client = require('./pool');
+const CoreModel = require('./coreModel'),
+      client = require('./pool');
 
-class Place {
-  static async findAll() {
-    try {
-      const places = await client.query('SELECT * FROM "place"');
+class Place extends CoreModel {
+  static tableName = "place";
 
-      return places.rows;
-    } catch(err) {
-      throw err;
-    }
-  }
-
-  static async findById(id) {
-    try {
-      const place = await client.query('SELECT * FROM "place" WHERE "id"=$1', [id]);
-
-      return place.rows[0];
-    } catch(err) {
-      throw err;
-    }
-  }
-
-  #id;
   #reference;
   #name;
   #address;
@@ -30,21 +12,13 @@ class Place {
   #city;
 
   constructor (obj) {
-    this.#id = obj.id;
+    super(obj);
     this.#reference = obj.reference;
     this.#name = obj.name;
     this.#address = obj.address;
     this.#additional = obj.additional;
     this.#postal_code = obj.postal_code;
     this.#city = obj.city;
-  }
-
-  get id() {
-    return this.#id;
-  }
-
-  set id(value) {
-    this.#id = value;
   }
 
   get reference() {
