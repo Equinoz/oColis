@@ -1,5 +1,9 @@
-const errors = require("./errors");
+const errors = require("./errors"),
+      cors = require("./cors");
+      auth = require("./auth");
 
 module.exports = {
-  errors
+  errors,
+  cors,
+  auth
 };

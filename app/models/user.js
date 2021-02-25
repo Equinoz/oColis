@@ -4,6 +4,37 @@ const CoreModel = require('./coreModel'),
 class User extends CoreModel {
   static tableName = "user";
 
+  // Redefine static methods for user model to customize the data output
+  static async findAll() {
+    try {
+      const elements = await client.query('SELECT "user"."id", "user"."mail", "status"."name" AS "status" FROM "user" JOIN "status" ON "status"."id" = "user"."status_id"');
+
+      return elements.rows;
+    } catch(err) {
+      throw err;
+    }
+  }
+
+  static async findById(id) {
+    try {
+      const element = await client.query('SELECT "user"."id", "user"."mail", "status"."name" AS "status" FROM "user" JOIN "status" ON "status"."id" = "user"."status_id" WHERE "user"."id" = $1', [id]);
+
+      return element.rows[0];
+    } catch(err) {
+      throw err;
+    }
+  }
+
+  static async findByMail(mail) {
+    try {
+      const element = await client.query('SELECT * FROM "user" WHERE "mail" = $1', [mail]);
+
+      return element.rows[0];
+    } catch(err) {
+      throw err;
+    }
+  }
+
   #mail;
   #status_id;
   #password;

@@ -1,6 +1,6 @@
-// ajouter login, logout, redéfinir méthodes statiques pour faire des requêtes SQL avec jointures, refaire MCD, empêcher changement de status user sauf si admin, JSDoc, nettoyer ici, README, CORS
-
+// ajouter login, logout, empêcher changement de status user sauf si admin, JSDoc
 const bcrypt = require("bcrypt"),
+      jwt = require("jsonwebtoken"),
       { User } = require("../models");
 
 const userController = {
@@ -11,9 +11,6 @@ const userController = {
       if (users.length < 1) {
         next();
       } else {
-        // for (const user of users) {
-        //   delete user.password;
-        // }
         res.status(200).json({ data: users });
       }
     } catch (err) {
@@ -30,7 +27,6 @@ const userController = {
       if (user == undefined) {
         next();
       } else {
-        // delete user.password;
         res.status(200).json({ data: user });
       }
     } catch (err) {
@@ -42,8 +38,8 @@ const userController = {
     try {
       // Add salt and hash user password
       req.body.status_id = 2;
-      req.body.password = bcrypt.hashSync(req.body.password + req.body.salt, 10);
       req.body.salt = bcrypt.genSaltSync();
+      req.body.password = bcrypt.hashSync(req.body.password + req.body.salt, 10);
 
       const user = new User(req.body);
       const newUserId = await user.insert();
@@ -92,6 +88,38 @@ const userController = {
         res.status(200).json({ data: { deleted: result }});
       }
     } catch (err) {
+      next(err);
+    }
+  },
+
+  // If mail's user exists and password matches returns a web token
+  loginUser: async (req, res, next) => {
+    if (!req.body.mail || !req.body.password) {
+        res.status(400).send({ error: "Invalid keys" });
+    }
+    const { mail, password } = { ...req.body };
+
+    try {
+      const user = await User.findByMail(mail);
+      const validPassword = (user) ? bcrypt.compareSync(password + user.salt, user.password) : null;
+
+      if (!user || !validPassword) {
+        res.status(401).end();
+      } else {
+        res.status(200).json({
+          data: {
+            userId: user.id,
+            token: jwt.sign(
+              {
+                userId: user.id,
+                userStatus_id: user.status_id
+              },
+              process.env.SECRET_TOKEN
+            )
+          }
+        });
+      }
+    } catch(err) {
       next(err);
     }
   }

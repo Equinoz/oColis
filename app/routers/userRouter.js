@@ -12,4 +12,7 @@ router.route("/:id")
   .patch(userController.updateUserById)
   .delete(userController.deleteUserById);
 
+router.route("/login")
+  .post(userController.loginUser);
+
 module.exports = router;
