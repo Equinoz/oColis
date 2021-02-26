@@ -1,3 +1,8 @@
+/**
+ * @module expeditionController 
+ * @description This module provide expeditions controller
+ */
+
 const { Expedition } = require("../models");
 
 const expeditionController = {

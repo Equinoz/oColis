@@ -1,3 +1,8 @@
+/**
+ * @module CoreModel 
+ * @description This module provide core model for the application models
+ */
+
 const client = require('./pool');
 
 class CoreModel {

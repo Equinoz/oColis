@@ -1,3 +1,8 @@
+/**
+ * @module userRouter 
+ * @description This module provide routes for users CRUD and login/logout
+ */
+
 const express = require("express"),
       router = express.Router();
 
@@ -15,5 +20,8 @@ router.route("/:id")
 
 router.route("/login")
   .post(userController.loginUser);
+
+router.route("/logout")
+  .get(userController.logoutUser);
 
 module.exports = router;

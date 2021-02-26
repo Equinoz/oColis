@@ -1,11 +1,14 @@
-// ajouter logout, JSDoc, mot de passe complexe?
+/**
+ * @module userController 
+ * @description This module provide users controller
+ */
+
 const bcrypt = require("bcrypt"),
       jwt = require("jsonwebtoken"),
       { User } = require("../models");
 
 const userController = {
   _checkPassword: password => {
-    return true;
     const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[-+!*$@%_])([-+!*$@%_\w]{8,})$/;
     return passwordRegex.test(password);
   },
@@ -145,6 +148,14 @@ const userController = {
     } catch(err) {
       next(err);
     }
+  },
+
+  // Adding the user's token to the blacklist for logout
+  logoutUser: (req, res) => {
+    const token = req.headers.authorization;
+    req.app.locals.blacklistedTokens.push(token);
+
+    res.status(204).end();
   }
 };
 

@@ -1,3 +1,8 @@
+/**
+ * @module index
+ * @description This module provide the application's models
+ */
+
 const Place = require("./place"),
       Expedition = require("./expedition"),
       Package = require("./package"),

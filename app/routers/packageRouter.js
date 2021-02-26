@@ -1,3 +1,8 @@
+/**
+ * @module packageRouter 
+ * @description This module provide routes for packages CRUD
+ */
+
 const express = require("express"),
       router = express.Router();
 

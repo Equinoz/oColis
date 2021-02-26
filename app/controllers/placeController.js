@@ -1,3 +1,8 @@
+/**
+ * @module placeController 
+ * @description This module provide places controller
+ */
+
 const { Place } = require("../models");
 
 const placeController = {

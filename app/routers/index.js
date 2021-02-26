@@ -1,3 +1,8 @@
+/**
+ * @module index
+ * @description This module provide the application's routers
+ */
+
 const express = require("express");
 
 const placeRouter = require("./placeRouter"),
@@ -9,8 +14,8 @@ const router = express.Router(),
       { auth } = require("../middlewares");
 
 router.use("/place", auth, placeRouter)
-      .use("/expedition", expeditionRouter)
-      .use("/package", packageRouter)
+      .use("/expedition", auth, expeditionRouter)
+      .use("/package", auth, packageRouter)
       .use("/user", userRouter);
   
 module.exports = router;

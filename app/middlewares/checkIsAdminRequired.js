@@ -1,6 +1,11 @@
+/**
+ * @module checkIsAdminRequired
+ * @description This module provide middleware to check if the action requires administrator status
+ */
+
 const { User } = require("../models");
 
-// check if the user have the permission to modify another profile than his
+// Check if the user have the permission to modify another profile than his
 const checkIsAdminRequired = async (req, res, next) => {
   let userId = parseInt(req.params.id, 10);
   userId = (isNaN(userId)) ? null : userId;

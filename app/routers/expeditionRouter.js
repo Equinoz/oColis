@@ -1,3 +1,8 @@
+/**
+ * @module expeditionRouter 
+ * @description This module provide routes for expeditions CRUD
+ */
+
 const express = require("express"),
       router = express.Router();
 

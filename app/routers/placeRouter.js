@@ -1,3 +1,8 @@
+/**
+ * @module placeRouter 
+ * @description This module provide routes for places CRUD
+ */
+
 const express = require("express"),
       router = express.Router();
 

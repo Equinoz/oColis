@@ -1,3 +1,8 @@
+/**
+ * @module PlaceModel 
+ * @description This module provide place model
+ */
+
 const CoreModel = require('./coreModel'),
       client = require('./pool');
 

@@ -1,3 +1,8 @@
+/**
+ * @module PackageModel 
+ * @description This module provide package model
+ */
+
 const CoreModel = require('./coreModel'),
       client = require('./pool');
 

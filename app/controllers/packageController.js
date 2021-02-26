@@ -1,3 +1,8 @@
+/**
+ * @module packageController 
+ * @description This module provide packages controller
+ */
+
 const { Package } = require("../models");
 
 const packageController = {

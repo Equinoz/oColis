@@ -1,3 +1,8 @@
+/**
+ * @module cors
+ * @description This module provide CORS middleware
+ */
+
 const cors = (req, res, next) => {
   let origin = "";
   // const whitelist = [];

@@ -1,3 +1,8 @@
+/**
+ * @module ExpeditionModel 
+ * @description This module provide expedition model
+ */
+
 const CoreModel = require('./coreModel'),
       client = require('./pool');
 

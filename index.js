@@ -5,6 +5,7 @@ const express = require("express"),
       { errors } = require("./app/middlewares");
 
 const app = express();
+app.locals.blacklistedTokens = [];
 
 const PORT = process.env.PORT || 5000,
       HOST = process.env.HOST || "localhost";
