@@ -1,16 +1,17 @@
 const express = require("express"),
       router = express.Router();
 
-const { userController } = require("../controllers");
+const { userController } = require("../controllers"),
+      { auth, checkIsAdminRequired } = require("../middlewares");
 
 router.route("/")
-  .get(userController.getAllUsers)
+  .get(auth, userController.getAllUsers)
   .post(userController.createUser);
 
 router.route("/:id")
-  .get(userController.getUserById)
-  .patch(userController.updateUserById)
-  .delete(userController.deleteUserById);
+  .get(auth, userController.getUserById)
+  .patch(auth, checkIsAdminRequired, userController.updateUserById)
+  .delete(auth, checkIsAdminRequired, userController.deleteUserById);
 
 router.route("/login")
   .post(userController.loginUser);

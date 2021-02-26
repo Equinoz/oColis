@@ -1,9 +1,15 @@
-// ajouter login, logout, empêcher changement de status user sauf si admin, JSDoc
+// ajouter logout, JSDoc, mot de passe complexe?
 const bcrypt = require("bcrypt"),
       jwt = require("jsonwebtoken"),
       { User } = require("../models");
 
 const userController = {
+  _checkPassword: password => {
+    return true;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[-+!*$@%_])([-+!*$@%_\w]{8,})$/;
+    return passwordRegex.test(password);
+  },
+
   getAllUsers: async (_, res, next) => {
     try {
       const users = await User.findAll();
@@ -36,6 +42,12 @@ const userController = {
 
   createUser: async (req, res, next) => {
     try {
+      // Check the password's complexity
+      if (!userController._checkPassword(req.body.password)) {
+        res.status(400).send({ error: "Password must be too strong" });
+        return;
+      }
+
       // Add salt and hash user password
       req.body.status_id = 2;
       req.body.salt = bcrypt.genSaltSync();
@@ -53,8 +65,19 @@ const userController = {
     try {
       let userId = parseInt(req.params.id, 10);
       userId = (isNaN(userId)) ? null : userId;
-      let user = await User.findById(userId);
+      let user = await User.findByIdWithDetails(userId);
+
+      if (req.body.status_id && (res.locals.userId == userId && user.status_id == 2)) {
+        res.status(403).send({ error: "User can't change his own status" });
+        return;
+      }
       if (req.body.password) {
+        // Check the password's complexity
+        if (!userController._checkPassword(req.body.password)) {
+          res.status(400).send({ error: "Password must be too strong" });
+          return;
+        }
+        // Hash user password
         req.body.password = bcrypt.hashSync(req.body.password + user.salt, 10);
       }
 
@@ -76,7 +99,7 @@ const userController = {
     try {
       let userId = parseInt(req.params.id, 10);
       userId = (isNaN(userId)) ? null : userId;
-      let user = await User.findById(userId);
+      let user = await User.findByIdWithDetails(userId);
 
       if (user == undefined) {
         next();

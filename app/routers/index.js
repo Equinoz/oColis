@@ -5,9 +5,10 @@ const placeRouter = require("./placeRouter"),
       packageRouter = require("./packageRouter"),
       userRouter = require("./userRouter");
 
-const router = express.Router();
+const router = express.Router(),
+      { auth } = require("../middlewares");
 
-router.use("/place", placeRouter)
+router.use("/place", auth, placeRouter)
       .use("/expedition", expeditionRouter)
       .use("/package", packageRouter)
       .use("/user", userRouter);

@@ -25,6 +25,16 @@ class User extends CoreModel {
     }
   }
 
+  static async findByIdWithDetails(id) {
+    try {
+      const element = await client.query('SELECT * FROM "user" WHERE "id" = $1', [id]);
+
+      return element.rows[0];
+    } catch(err) {
+      throw err;
+    }
+  }
+
   static async findByMail(mail) {
     try {
       const element = await client.query('SELECT * FROM "user" WHERE "mail" = $1', [mail]);
@@ -98,8 +108,8 @@ class User extends CoreModel {
 
   async update() {
     const preparedQuery = {
-      text: 'UPDATE "user" SET ("mail", "status_id", "password", "salt") = ($1, $2, $3, $4) WHERE "id"=$5',
-      values: [this.mail, this.status_id, this.password, this.salt, this.id]
+      text: 'UPDATE "user" SET ("mail", "status_id", "password") = ($1, $2, $3) WHERE "id"=$4',
+      values: [this.mail, this.status_id, this.password, this.id]
     };
 
     try {
