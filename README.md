@@ -6,7 +6,7 @@
 ___
 
 ## Utilisation  
-1. Base de données PostgreSQL et configuration du fichier `.env` requis  
+1. Base de données PostgreSQL, redis et configuration du fichier `.env` requis  
 2. Lancer `./data/script.sql`  
 3. Lancer en ligne de commande:  
 ``` bash
