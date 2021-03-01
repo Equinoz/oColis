@@ -3,8 +3,8 @@
  * @description This module provide user model
  */
 
-const CoreModel = require('./coreModel'),
-      client = require('./pool');
+const CoreModel = require("./coreModel"),
+      { client } = require("../database");
 
 class User extends CoreModel {
   static tableName = "user";
@@ -20,19 +20,15 @@ class User extends CoreModel {
     }
   }
 
-  static async findById(id) {
+  static async findById(id, details=false) {
     try {
-      const element = await client.query('SELECT "user"."id", "user"."mail", "status"."name" AS "status" FROM "user" JOIN "status" ON "status"."id" = "user"."status_id" WHERE "user"."id" = $1', [id]);
-
-      return element.rows[0];
-    } catch(err) {
-      throw err;
-    }
-  }
-
-  static async findByIdWithDetails(id) {
-    try {
-      const element = await client.query('SELECT * FROM "user" WHERE "id" = $1', [id]);
+      let request;
+      if (details) {
+        request = 'SELECT * FROM "user" WHERE "id" = $1';
+      } else {
+        request = 'SELECT "user"."id", "user"."mail", "status"."name" AS "status" FROM "user" JOIN "status" ON "status"."id" = "user"."status_id" WHERE "user"."id" = $1';
+      }
+      const element = await client.query(request, [id]);
 
       return element.rows[0];
     } catch(err) {

@@ -3,8 +3,8 @@
  * @description This module provide place model
  */
 
-const CoreModel = require('./coreModel'),
-      client = require('./pool');
+const CoreModel = require("./coreModel"),
+      { client } = require("../database");
 
 class Place extends CoreModel {
   static tableName = "place";

@@ -3,8 +3,8 @@
  * @description This module provide package model
  */
 
-const CoreModel = require('./coreModel'),
-      client = require('./pool');
+const CoreModel = require("./coreModel"),
+      { client } = require("../database");
 
 class Package extends CoreModel {
   static tableName = "package";

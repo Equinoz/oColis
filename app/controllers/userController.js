@@ -5,7 +5,8 @@
 
 const bcrypt = require("bcrypt"),
       jwt = require("jsonwebtoken"),
-      { User } = require("../models");
+      { User } = require("../models"),
+      { redisClient } = require("../database");
 
 const userController = {
   _checkPassword: password => {
@@ -68,7 +69,7 @@ const userController = {
     try {
       let userId = parseInt(req.params.id, 10);
       userId = (isNaN(userId)) ? null : userId;
-      let user = await User.findByIdWithDetails(userId);
+      let user = await User.findById(userId, true);
 
       if (req.body.status_id && (res.locals.userId == userId && user.status_id == 2)) {
         res.status(403).send({ error: "User can't change his own status" });
@@ -102,7 +103,7 @@ const userController = {
     try {
       let userId = parseInt(req.params.id, 10);
       userId = (isNaN(userId)) ? null : userId;
-      let user = await User.findByIdWithDetails(userId);
+      let user = await User.findById(userId, true);
 
       if (user == undefined) {
         next();
@@ -153,7 +154,7 @@ const userController = {
   // Adding the user's token to the blacklist for logout
   logoutUser: (req, res) => {
     const token = req.headers.authorization;
-    req.app.locals.blacklistedTokens.push(token);
+    redisClient.set(token);
 
     res.status(204).end();
   }

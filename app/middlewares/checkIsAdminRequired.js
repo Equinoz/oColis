@@ -9,7 +9,7 @@ const { User } = require("../models");
 const checkIsAdminRequired = async (req, res, next) => {
   let userId = parseInt(req.params.id, 10);
   userId = (isNaN(userId)) ? null : userId;
-  const userToModify = await User.findByIdWithDetails(userId);
+  const userToModify = await User.findById(userId, true);
 
   if ((res.locals.userId != userId) && (res.locals.userStatus_id == 2 || userToModify.status_id == 1)) {
     res.status(403).send({ error: "Invalid user's status" });

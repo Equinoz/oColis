@@ -3,7 +3,7 @@
  * @description This module provide core model for the application models
  */
 
-const client = require('./pool');
+const { client } = require("../database");
 
 class CoreModel {
   static async findAll() {

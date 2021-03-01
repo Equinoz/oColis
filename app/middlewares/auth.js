@@ -3,14 +3,15 @@
  * @description This module provide authentification middleware
  */
 
-const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken"),
+      { redisClient } = require("../database");
 
-const auth = (req, res, next) => {
+const auth = async (req, res, next) => {
   const token = req.headers.authorization;
 
   try {
     // Check if the token isn't in the blacklist
-    if (req.app.locals.blacklistedTokens.includes(token)) {
+    if (await redisClient.exists(token)) {
       throw "Token already used";
     }
 

@@ -3,8 +3,8 @@
  * @description This module provide expedition model
  */
 
-const CoreModel = require('./coreModel'),
-      client = require('./pool');
+const CoreModel = require("./coreModel"),
+      { client } = require("../database");
 
 class Expedition extends CoreModel {
   static tableName = "expedition";
