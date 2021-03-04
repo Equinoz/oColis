@@ -6,6 +6,14 @@
 const redis = require("redis");
 const client = redis.createClient();
 
+client.on("error", err => {
+  if (err.code == "ECONNREFUSED") {
+    throw "Error: redis server must running";
+  } else {
+    throw err;
+  }
+});
+
 const redisClient = {
   set: token => new Promise((resolve, reject) => {
     client.set(process.env.KEY_PREFIX + token, "null", err => {
