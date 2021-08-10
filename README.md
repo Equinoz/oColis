@@ -14,3 +14,5 @@ npm install
 npm run import
 npm run start
 ```
+
+mysql -u julien -p ocolis <./data/script.sql

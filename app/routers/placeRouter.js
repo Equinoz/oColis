@@ -6,15 +6,16 @@
 const express = require("express"),
       router = express.Router();
 
-const { placeController } = require("../controllers");
+const { placeController } = require("../controllers"),
+      { auth } = require("../middlewares");
 
 router.route("/")
   .get(placeController.getAllPlaces)
-  .post(placeController.createPlace);
+  .post(auth, placeController.createPlace);
 
 router.route("/:id")
   .get(placeController.getPlaceById)
-  .patch(placeController.updatePlaceById)
-  .delete(placeController.deletePlaceById);
+  .patch(auth, placeController.updatePlaceById)
+  .delete(auth, placeController.deletePlaceById);
 
 module.exports = router;

@@ -10,12 +10,11 @@ const placeRouter = require("./placeRouter"),
       packageRouter = require("./packageRouter"),
       userRouter = require("./userRouter");
 
-const router = express.Router(),
-      { auth } = require("../middlewares");
+const router = express.Router();
 
-router.use("/place", auth, placeRouter)
-      .use("/expedition", auth, expeditionRouter)
-      .use("/package", auth, packageRouter)
+router.use("/place", placeRouter)
+      .use("/expedition", expeditionRouter)
+      .use("/package", packageRouter)
       .use("/user", userRouter);
   
 module.exports = router;

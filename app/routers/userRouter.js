@@ -22,6 +22,6 @@ router.route("/login")
   .post(userController.loginUser);
 
 router.route("/logout")
-  .get(userController.logoutUser);
+  .get(auth, userController.logoutUser);
 
 module.exports = router;

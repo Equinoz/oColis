@@ -6,15 +6,16 @@
 const express = require("express"),
       router = express.Router();
 
-const { packageController } = require("../controllers");
+const { packageController } = require("../controllers"),
+      { auth } = require("../middlewares");
 
 router.route("/")
   .get(packageController.getAllPackages)
-  .post(packageController.createPackage);
+  .post(auth, packageController.createPackage);
 
 router.route("/:id")
   .get(packageController.getPackageById)
-  .patch(packageController.updatePackageById)
-  .delete(packageController.deletePackageById);
+  .patch(auth, packageController.updatePackageById)
+  .delete(auth, packageController.deletePackageById);
 
 module.exports = router;

@@ -5,8 +5,7 @@
 
 const bcrypt = require("bcrypt"),
       jwt = require("jsonwebtoken"),
-      { User } = require("../models"),
-      { redisClient } = require("../database");
+      { User, Token } = require("../models");
 
 const userController = {
   _checkPassword: password => {
@@ -147,6 +146,7 @@ const userController = {
         });
       }
     } catch(err) {
+      console.log(err)
       next(err);
     }
   },
@@ -154,7 +154,8 @@ const userController = {
   // Adding the user's token to the blacklist for logout
   logoutUser: (req, res) => {
     const token = req.headers.authorization;
-    redisClient.set(token);
+    const blacklistedToken = new Token({ value: token });
+    blacklistedToken.add();
 
     res.status(204).end();
   }

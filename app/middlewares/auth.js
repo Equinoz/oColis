@@ -4,14 +4,14 @@
  */
 
 const jwt = require("jsonwebtoken"),
-      { redisClient } = require("../database");
+      { Token } = require("../models");
 
 const auth = async (req, res, next) => {
   const token = req.headers.authorization;
 
   try {
     // Check if the token isn't in the blacklist
-    if (await redisClient.exists(token)) {
+    if (await Token.exists(token)) {
       throw "Token already used";
     }
 

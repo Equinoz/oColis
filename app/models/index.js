@@ -6,11 +6,13 @@
 const Place = require("./place"),
       Expedition = require("./expedition"),
       Package = require("./package"),
-      User = require("./user");
+      User = require("./user"),
+      Token = require("./token");
 
 module.exports = {
   Place,
   Expedition,
   Package,
-  User
+  User,
+  Token
 };

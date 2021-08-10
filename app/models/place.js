@@ -76,7 +76,7 @@ class Place extends CoreModel {
 
   async insert() {
     const preparedQuery = {
-      text: 'INSERT INTO "place" ("reference", "name", "address", "additional", "postal_code", "city") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"',
+      text: 'INSERT INTO "place" ("reference", "name", "address", "additional", "postal_code", "city") VALUES (?, ?, ?, ?, ?, ?) RETURNING "id"',
       values: [this.reference, this.name, this.address, this.additional, this.postal_code, this.city]
     };
 
@@ -92,7 +92,7 @@ class Place extends CoreModel {
 
   async update() {
     const preparedQuery = {
-      text: 'UPDATE "place" SET ("reference", "name", "address", "additional", "postal_code", "city") = ($1, $2, $3, $4, $5, $6) WHERE "id"=$7',
+      text: 'UPDATE "place" SET ("reference", "name", "address", "additional", "postal_code", "city") = (?, ?, ?, ?, ?, ?) WHERE "id"=?',
       values: [this.reference, this.name, this.address, this.additional, this.postal_code, this.city, this.id]
     };
 
@@ -110,8 +110,8 @@ class Place extends CoreModel {
       // SQL transactions
       await client.query('BEGIN');
       // References to the places table must be removed from the packages table
-      await client.query('DELETE FROM "package" WHERE "sender_id"=$1 OR "recipient_id"=$1', [this.id]);
-      const results = await client.query('DELETE FROM "place" WHERE "id"=$1', [this.id]);
+      await client.query('DELETE FROM "package" WHERE "sender_id"=? OR "recipient_id"=?', [this.id]);
+      const results = await client.query('DELETE FROM "place" WHERE "id"=?', [this.id]);
       await client.query('COMMIT');
 
       return (results.rowCount > 0) ? true : false;

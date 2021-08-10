@@ -96,7 +96,7 @@ class Package extends CoreModel {
 
   async insert() {
     const preparedQuery = {
-      text: 'INSERT INTO "package" ("serial_number", "content_description", "weight", "volume", "worth", "sender_id", "recipient_id", "expedition_id") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING "id"',
+      text: 'INSERT INTO "package" ("serial_number", "content_description", "weight", "volume", "worth", "sender_id", "recipient_id", "expedition_id") VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"',
       values: [this.serial_number, this.content_description, this.weight, this.volume, this.worth, this.sender_id, this.recipient_id, this.expedition_id]
     };
 
@@ -112,7 +112,7 @@ class Package extends CoreModel {
 
   async update() {
     const preparedQuery = {
-      text: 'UPDATE "package" SET ("serial_number", "content_description", "weight", "volume", "worth", "sender_id", "recipient_id", "expedition_id") = ($1, $2, $3, $4, $5, $6, $7, $8) WHERE "id"=$9',
+      text: 'UPDATE "package" SET ("serial_number", "content_description", "weight", "volume", "worth", "sender_id", "recipient_id", "expedition_id") = (?, ?, ?, ?, ?, ?, ?, ?) WHERE "id"=$9',
       values: [this.serial_number, this.content_description, this.weight, this.volume, this.worth, this.sender_id, this.recipient_id, this.expedition_id, this.id]
     };
 
@@ -127,7 +127,7 @@ class Package extends CoreModel {
 
   async delete() {
     try {
-      const results = await client.query('DELETE FROM "package" WHERE "id"=$1', [this.id]);
+      const results = await client.query('DELETE FROM "package" WHERE "id"=?', [this.id]);
 
       return (results.rowCount > 0) ? true : false;
     } catch(err) {

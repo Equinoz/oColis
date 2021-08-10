@@ -8,7 +8,7 @@ const { client } = require("../database");
 class CoreModel {
   static async findAll() {
     try {
-      const elements = await client.query(`SELECT * FROM "${this.tableName}"`);
+      const elements = await client.query(`SELECT * FROM ${this.tableName}`);
 
       return elements.rows;
     } catch(err) {
@@ -18,7 +18,7 @@ class CoreModel {
 
   static async findById(id) {
     try {
-      const element = await client.query(`SELECT * FROM "${this.tableName}" WHERE "id"=$1`, [id]);
+      const element = await client.query(`SELECT * FROM ${this.tableName} WHERE id= ?`, [id]);
 
       return element.rows[0];
     } catch(err) {

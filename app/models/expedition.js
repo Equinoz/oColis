@@ -56,7 +56,7 @@ class Expedition extends CoreModel {
 
   async insert() {
     const preparedQuery = {
-      text: 'INSERT INTO "expedition" ("driver_name", "vehicle_plate", "starting_time", "ending_time") VALUES ($1, $2, $3, $4) RETURNING "id"',
+      text: 'INSERT INTO "expedition" ("driver_name", "vehicle_plate", "starting_time", "ending_time") VALUES (?, ?, ?, ?) RETURNING "id"',
       values: [this.driver_name, this.vehicle_plate, this.starting_time, this.ending_time]
     };
 
@@ -72,7 +72,7 @@ class Expedition extends CoreModel {
 
   async update() {
     const preparedQuery = {
-      text: 'UPDATE "expedition" SET ("driver_name", "vehicle_plate", "starting_time", "ending_time") = ($1, $2, $3, $4) WHERE "id"=$5',
+      text: 'UPDATE "expedition" SET ("driver_name", "vehicle_plate", "starting_time", "ending_time") = (?, ?, ?, ?) WHERE "id"=?',
       values: [this.driver_name, this.vehicle_plate, this.starting_time, this.ending_time, this.id]
     };
 
@@ -90,8 +90,8 @@ class Expedition extends CoreModel {
       // SQL transactions
       await client.query('BEGIN');
       // References to the expeditions table must be removed from the packages table
-      await client.query('DELETE FROM "package" WHERE "expedition_id"=$1', [this.id]);
-      const results = await client.query('DELETE FROM "expedition" WHERE "id"=$1', [this.id]);
+      await client.query('DELETE FROM "package" WHERE "expedition_id"=?', [this.id]);
+      const results = await client.query('DELETE FROM "expedition" WHERE "id"=?', [this.id]);
       await client.query('COMMIT');
 
       return (results.rowCount > 0) ? true : false;

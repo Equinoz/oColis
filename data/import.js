@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const faker = require("faker"),
-      { Client } = require("pg");
+      mysql = require("mysql2/promise");
 
 (async () => {
   // Get the optionnal command-line arguments
@@ -9,21 +9,32 @@ const faker = require("faker"),
         expeditionsNumber = process.argv[3] || 4,
         packagesNumber = process.argv[4] || 12;
 
-  const client = new Client(process.env.PG_URL);
+  const client = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE
+  });
 
   await client.connect();
 
   // SQL transaction
   await client.query('BEGIN');
 
-  // Truncate tabless
-  await client.query('TRUNCATE TABLE "status", "user", "place", "expedition", "package" RESTART IDENTITY');
+  // Truncate tables
+  await client.query('SET FOREIGN_KEY_CHECKS = 0');
+  await client.query('TRUNCATE TABLE user');
+  await client.query('TRUNCATE TABLE package');
+  await client.query('TRUNCATE TABLE place');
+  await client.query('TRUNCATE TABLE expedition');
+  await client.query('TRUNCATE TABLE status');
+  await client.query('SET FOREIGN_KEY_CHECKS = 1');
 
   // Create new status entities
-  await client.query('INSERT INTO "status" ("name") VALUES (\'admin\'), (\'user\')');
+  await client.query('INSERT INTO status (name) VALUES (\'admin\'), (\'user\')');
 
   // Create new users entities
-  await client.query('INSERT INTO "user" ("mail", "status_id", "password", "salt") VALUES (\'chuck.norris@gmail.com\', 1, \'$2b$10$ov4iTOGFXvppZgE1LBBPB.W1gm04LoDdeUk.TgIW63mK4Aga5ks9O\', \'$2b$10$R4iepjPakY7AEn3GsvOzdu\'), (\'bruce.wayne@gmail.com\', 2, \'$2b$10$cdZ3xQJyDfgKXPM1ivP2WeRLp3VzV.4SvblUcdV7vMjy5HKMamPhG\', \'$2b$10$XR6CH5YAgDKDFb65oO/GRu\'), (\'clark.kent@gmail.com\', 2, \'$2b$10$PUPUkSbHqaggOXg4g7U2qOgtklysknsgC/2KjMczVuPAXNzJR.2R.\', \'$2b$10$hEJ9eSHk9Z5Z7YKooJodZe\')');
+  await client.query('INSERT INTO user (mail, status_id, password, salt) VALUES (\'chuck.norris@gmail.com\', 1, \'$2b$10$ov4iTOGFXvppZgE1LBBPB.W1gm04LoDdeUk.TgIW63mK4Aga5ks9O\', \'$2b$10$R4iepjPakY7AEn3GsvOzdu\'), (\'bruce.wayne@gmail.com\', 2, \'$2b$10$cdZ3xQJyDfgKXPM1ivP2WeRLp3VzV.4SvblUcdV7vMjy5HKMamPhG\', \'$2b$10$XR6CH5YAgDKDFb65oO/GRu\'), (\'clark.kent@gmail.com\', 2, \'$2b$10$PUPUkSbHqaggOXg4g7U2qOgtklysknsgC/2KjMczVuPAXNzJR.2R.\', \'$2b$10$hEJ9eSHk9Z5Z7YKooJodZe\')');
 
   // Create new places entities
   const places = [];
@@ -33,7 +44,7 @@ const faker = require("faker"),
     place += ")";
     places.push(place);
   }
-  await client.query('INSERT INTO "place" ("reference", "name", "address", "additional", "postal_code", "city") VALUES ' + places.join(", "));
+  await client.query('INSERT INTO place (reference, name, address, additional, postal_code, city) VALUES ' + places.join(", "));
 
   // Create new expediditions entities
   const expeditions = [];
@@ -43,7 +54,7 @@ const faker = require("faker"),
     expedition += ")";
     expeditions.push(expedition);
   }
-  await client.query('INSERT INTO "expedition" ("driver_name", "vehicle_plate", "starting_time") VALUES ' + expeditions.join(", "));
+  await client.query('INSERT INTO expedition (driver_name, vehicle_plate, starting_time) VALUES ' + expeditions.join(", "));
 
   // Create new packages entities
   const packages = [];
@@ -53,7 +64,7 @@ const faker = require("faker"),
     package += ")";
     packages.push(package);
   }
-  await client.query('INSERT INTO "package" ("serial_number", "content_description", "weight", "volume", "worth", "sender_id", "recipient_id", "expedition_id") VALUES ' + packages.join(", "));
+  await client.query('INSERT INTO package (serial_number, content_description, weight, volume, worth, sender_id, recipient_id, expedition_id) VALUES ' + packages.join(", "));
 
   await client.query('COMMIT');
 

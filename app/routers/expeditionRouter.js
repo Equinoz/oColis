@@ -6,15 +6,16 @@
 const express = require("express"),
       router = express.Router();
 
-const { expeditionController } = require("../controllers");
+const { expeditionController } = require("../controllers"),
+      { auth } = require("../middlewares");
 
 router.route("/")
   .get(expeditionController.getAllExpeditions)
-  .post(expeditionController.createExpedition);
+  .post(auth, expeditionController.createExpedition);
 
 router.route("/:id")
   .get(expeditionController.getExpeditionById)
-  .patch(expeditionController.updateExpeditionById)
-  .delete(expeditionController.deleteExpeditionById);
+  .patch(auth, expeditionController.updateExpeditionById)
+  .delete(auth, expeditionController.deleteExpeditionById);
 
 module.exports = router;

@@ -11,8 +11,9 @@ class User extends CoreModel {
 
   // Redefine static methods for user model to customize the data output
   static async findAll() {
+    console.log("bibi");
     try {
-      const elements = await client.query('SELECT "user"."id", "user"."mail", "status"."name" AS "status" FROM "user" JOIN "status" ON "status"."id" = "user"."status_id"');
+      const elements = await client.query('SELECT user.id, user.mail, status.name AS status FROM user JOIN status ON status.id = user.status_id');
 
       return elements.rows;
     } catch(err) {
@@ -24,9 +25,9 @@ class User extends CoreModel {
     try {
       let request;
       if (details) {
-        request = 'SELECT * FROM "user" WHERE "id" = $1';
+        request = 'SELECT * FROM user WHERE id = $1';
       } else {
-        request = 'SELECT "user"."id", "user"."mail", "status"."name" AS "status" FROM "user" JOIN "status" ON "status"."id" = "user"."status_id" WHERE "user"."id" = $1';
+        request = 'SELECT user.id, user.mail, status.name AS status FROM user JOIN status ON status.id = user.status_id WHERE user.id = ?';
       }
       const element = await client.query(request, [id]);
 
@@ -38,7 +39,7 @@ class User extends CoreModel {
 
   static async findByMail(mail) {
     try {
-      const element = await client.query('SELECT * FROM "user" WHERE "mail" = $1', [mail]);
+      const element = await client.query('SELECT * FROM user WHERE mail = ?', [mail]);
 
       return element.rows[0];
     } catch(err) {
@@ -93,7 +94,7 @@ class User extends CoreModel {
 
   async insert() {
     const preparedQuery = {
-      text: 'INSERT INTO "user" ("mail", "status_id", "password", "salt") VALUES ($1, $2, $3, $4) RETURNING "id"',
+      text: 'INSERT INTO user (mail, status_id, password, salt) VALUES (?, ?, ?, ?) RETURNING id',
       values: [this.mail, this.status_id, this.password, this.salt]
     };
 
@@ -109,7 +110,7 @@ class User extends CoreModel {
 
   async update() {
     const preparedQuery = {
-      text: 'UPDATE "user" SET ("mail", "status_id", "password") = ($1, $2, $3) WHERE "id"=$4',
+      text: 'UPDATE user SET (mail, status_id, password) = (?, ?, ?) WHERE id=?',
       values: [this.mail, this.status_id, this.password, this.id]
     };
 
@@ -124,7 +125,7 @@ class User extends CoreModel {
 
   async delete() {
     try {
-      const results = await client.query('DELETE FROM "user" WHERE "id"=$1', [this.id]);
+      const results = await client.query('DELETE FROM user WHERE id=?', [this.id]);
 
       return (results.rowCount > 0) ? true : false;
     } catch(err) {
