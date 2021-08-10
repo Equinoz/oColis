@@ -11,61 +11,63 @@ class User extends CoreModel {
 
   // Redefine static methods for user model to customize the data output
   static async findAll() {
-    console.log("bibi");
+    const connection = await client;
     try {
-      const elements = await client.query('SELECT user.id, user.mail, status.name AS status FROM user JOIN status ON status.id = user.status_id');
+      const [users, _] = await connection.query('SELECT user.id, user.email, status.name AS status FROM user JOIN status ON status.id = user.status_id');
 
-      return elements.rows;
+      return users;
     } catch(err) {
       throw err;
     }
   }
 
   static async findById(id, details=false) {
+    const connection = await client;
     try {
       let request;
       if (details) {
-        request = 'SELECT * FROM user WHERE id = $1';
+        request = 'SELECT * FROM user WHERE id = ?';
       } else {
-        request = 'SELECT user.id, user.mail, status.name AS status FROM user JOIN status ON status.id = user.status_id WHERE user.id = ?';
+        request = 'SELECT user.id, user.email, status.name AS status FROM user JOIN status ON status.id = user.status_id WHERE user.id = ?';
       }
-      const element = await client.query(request, [id]);
+      const [users, _] = await connection.query(request, [id]);
 
-      return element.rows[0];
+      return users[0];
     } catch(err) {
       throw err;
     }
   }
 
-  static async findByMail(mail) {
+  static async findByMail(email) {
+    const connection = await client;
     try {
-      const element = await client.query('SELECT * FROM user WHERE mail = ?', [mail]);
+      const [users, _] = await connection.query('SELECT * FROM user WHERE email = ?', [email]);
 
-      return element.rows[0];
+      return users[0];
     } catch(err) {
       throw err;
     }
   }
 
-  #mail;
+  #email;
   #status_id;
   #password;
   #salt;
 
   constructor (obj) {
     super(obj);
-    this.#mail = obj.mail;
+    this.#email = obj.email;
     this.#status_id = obj.status_id;
     this.#password = obj.password;
     this.#salt = obj.salt;
   }
 
-  get mail() {
-    return this.#mail;
+  get email() {
+    return this.#email;
   }
 
-  set mail(value) {
-    this.#mail = value;
+  set email(value) {
+    this.#email = value;
   }
 
   get status_id() {
@@ -93,14 +95,15 @@ class User extends CoreModel {
   }
 
   async insert() {
-    const preparedQuery = {
-      text: 'INSERT INTO user (mail, status_id, password, salt) VALUES (?, ?, ?, ?) RETURNING id',
-      values: [this.mail, this.status_id, this.password, this.salt]
-    };
+    const connection = await client;
+    const preparedQuery = [
+      'INSERT INTO user (email, status_id, password, salt) VALUES (?, ?, ?, ?)',
+      [this.email, this.status_id, this.password, this.salt]
+    ];
 
     try {
-      const results = await client.query(preparedQuery);
-      this.id = results.rows[0].id;
+      const [result, _] = await connection.query(...preparedQuery);
+      this.id = result.insertId;
 
       return this.id;
     } catch(err) {
@@ -109,25 +112,27 @@ class User extends CoreModel {
   }
 
   async update() {
-    const preparedQuery = {
-      text: 'UPDATE user SET (mail, status_id, password) = (?, ?, ?) WHERE id=?',
-      values: [this.mail, this.status_id, this.password, this.id]
-    };
+    const connection = await client;
+    const preparedQuery = [
+      'UPDATE user SET email = ?, status_id = ?, password = ? WHERE id=?',
+      [this.email, this.status_id, this.password, this.id]
+    ];
 
     try {
-      const results = await client.query(preparedQuery);
+      const [result, _] = await connection.query(...preparedQuery);
 
-      return (results.rowCount > 0) ? true : false;
+      return (result.changedRows > 0) ? true : false;
     } catch(err) {
       throw err;
     }
   }
 
   async delete() {
+    const connection = await client;
     try {
-      const results = await client.query('DELETE FROM user WHERE id=?', [this.id]);
+      const [result, _] = await connection.query('DELETE FROM user WHERE id=?', [this.id]);
 
-      return (results.rowCount > 0) ? true : false;
+      return (result.affectedRows > 0) ? true : false;
     } catch(err) {
       throw err;
     }

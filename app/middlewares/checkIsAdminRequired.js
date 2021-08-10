@@ -11,7 +11,10 @@ const checkIsAdminRequired = async (req, res, next) => {
   userId = (isNaN(userId)) ? null : userId;
   const userToModify = await User.findById(userId, true);
 
-  if ((res.locals.userId != userId) && (res.locals.userStatus_id == 2 || userToModify.status_id == 1)) {
+  if (!userToModify) {
+    res.status(404).send({ error: "Resource not found" });
+    return;
+  } else if ((res.locals.userId != userId) && (res.locals.userStatus_id == 2 || userToModify.status_id == 1)) {
     res.status(403).send({ error: "Invalid user's status" });
     return;
   }

@@ -9,7 +9,7 @@ const faker = require("faker"),
         expeditionsNumber = process.argv[3] || 4,
         packagesNumber = process.argv[4] || 12;
 
-  const client = mysql.createConnection({
+  const client = await mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
@@ -34,7 +34,7 @@ const faker = require("faker"),
   await client.query('INSERT INTO status (name) VALUES (\'admin\'), (\'user\')');
 
   // Create new users entities
-  await client.query('INSERT INTO user (mail, status_id, password, salt) VALUES (\'chuck.norris@gmail.com\', 1, \'$2b$10$ov4iTOGFXvppZgE1LBBPB.W1gm04LoDdeUk.TgIW63mK4Aga5ks9O\', \'$2b$10$R4iepjPakY7AEn3GsvOzdu\'), (\'bruce.wayne@gmail.com\', 2, \'$2b$10$cdZ3xQJyDfgKXPM1ivP2WeRLp3VzV.4SvblUcdV7vMjy5HKMamPhG\', \'$2b$10$XR6CH5YAgDKDFb65oO/GRu\'), (\'clark.kent@gmail.com\', 2, \'$2b$10$PUPUkSbHqaggOXg4g7U2qOgtklysknsgC/2KjMczVuPAXNzJR.2R.\', \'$2b$10$hEJ9eSHk9Z5Z7YKooJodZe\')');
+  await client.query('INSERT INTO user (email, status_id, password, salt) VALUES (\'chuck.norris@gmail.com\', 1, \'$2b$10$ov4iTOGFXvppZgE1LBBPB.W1gm04LoDdeUk.TgIW63mK4Aga5ks9O\', \'$2b$10$R4iepjPakY7AEn3GsvOzdu\'), (\'bruce.wayne@gmail.com\', 2, \'$2b$10$cdZ3xQJyDfgKXPM1ivP2WeRLp3VzV.4SvblUcdV7vMjy5HKMamPhG\', \'$2b$10$XR6CH5YAgDKDFb65oO/GRu\'), (\'clark.kent@gmail.com\', 2, \'$2b$10$PUPUkSbHqaggOXg4g7U2qOgtklysknsgC/2KjMczVuPAXNzJR.2R.\', \'$2b$10$hEJ9eSHk9Z5Z7YKooJodZe\')');
 
   // Create new places entities
   const places = [];

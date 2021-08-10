@@ -6,13 +6,11 @@
 ___
 
 ## Utilisation  
-1. Base de données PostgreSQL, redis et configuration du fichier `.env` requis  
-2. Lancer `./data/script.sql`  
-3. Lancer en ligne de commande:  
+1. Node.js, base de données MySQL et configuration du fichier `.env` requis  
+2. Exécuter `mysql -u userName -p databaseName <./data/script.sql`  
+3. Exécuter en ligne de commande:  
 ``` bash
 npm install
 npm run import
 npm run start
 ```
-
-mysql -u julien -p ocolis <./data/script.sql

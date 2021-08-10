@@ -11,11 +11,11 @@ class Token extends CoreModel {
 
   static async exists(value) {
     try {
+      const connection = await client;
       const request = 'SELECT * FROM blacklisted_token WHERE value = ?';
-      const result = await client.execute(request, [value]);
-      console.log(result);
+      const [rows, _] = await connection.query(request, [value]);
 
-      return (result.rows.length > 0) ? true : false;
+      return (rows.length > 0) ? true : false;
     } catch(err) {
       throw err;
     }
@@ -33,13 +33,14 @@ class Token extends CoreModel {
   }
 
   async add() {
-    const preparedQuery = {
-      text: 'INSERT INTO blacklisted_token ("value") VALUES (?)',
-      values: [this.value]
-    };
+    const connection = await client;
+    const preparedQuery = [
+      'INSERT INTO blacklisted_token (value) VALUES (?)',
+      [this.value]
+    ];
 
     try {
-      await client.query(preparedQuery);
+      await connection.query(...preparedQuery);
 
       return;
     } catch(err) {

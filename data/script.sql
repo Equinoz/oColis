@@ -14,7 +14,7 @@ CREATE TABLE status (
 
 CREATE TABLE user (
   id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  mail text NOT NULL,
+  email text NOT NULL,
   status_id int NOT NULL,
   CONSTRAINT fk_status_id FOREIGN KEY (status_id) REFERENCES status(id),
   password text NOT NULL,

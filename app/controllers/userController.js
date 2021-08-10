@@ -8,8 +8,13 @@ const bcrypt = require("bcrypt"),
       { User, Token } = require("../models");
 
 const userController = {
+  _checkEmail: email => {
+    const emailRegex = /^\w+@\w+\.\w+$/;
+    return emailRegex.test(email);
+  },
+
   _checkPassword: password => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[-+!*$@%_])([-+!*$@%_\w]{8,})$/;
+    const passwordRegex = /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)(?=.*?[#?!@$%^&*-]).{8,}/;
     return passwordRegex.test(password);
   },
 
@@ -44,7 +49,14 @@ const userController = {
   },
 
   createUser: async (req, res, next) => {
+    // Pas de doublon sur les adresse mails!!!
     try {
+      // Check the email's validity
+      if (req.body.email == undefined || !userController._checkEmail(req.body.email)) {
+        res.status(400).send({ error: "Mail address must be valid" });
+        return;
+      }
+
       // Check the password's complexity
       if (!userController._checkPassword(req.body.password)) {
         res.status(400).send({ error: "Password must be too strong" });
@@ -74,6 +86,14 @@ const userController = {
         res.status(403).send({ error: "User can't change his own status" });
         return;
       }
+      if (req.body.email) {
+        // Check the email's validity
+        if (!userController._checkEmail(req.body.email)) {
+          res.status(400).send({ error: "Mail address must be valid" });
+          return;
+        }
+      }
+
       if (req.body.password) {
         // Check the password's complexity
         if (!userController._checkPassword(req.body.password)) {
@@ -120,13 +140,13 @@ const userController = {
 
   // If mail's user exists and password matches returns a web token
   loginUser: async (req, res, next) => {
-    if (!req.body.mail || !req.body.password) {
+    if (!req.body.email || !req.body.password) {
         res.status(400).send({ error: "Invalid keys" });
     }
-    const { mail, password } = { ...req.body };
+    const { email, password } = { ...req.body };
 
     try {
-      const user = await User.findByMail(mail);
+      const user = await User.findByMail(email);
       const validPassword = (user) ? bcrypt.compareSync(password + user.salt, user.password) : null;
 
       if (!user || !validPassword) {
