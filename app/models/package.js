@@ -95,14 +95,15 @@ class Package extends CoreModel {
   }
 
   async insert() {
-    const preparedQuery = {
-      text: 'INSERT INTO "package" ("serial_number", "content_description", "weight", "volume", "worth", "sender_id", "recipient_id", "expedition_id") VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"',
-      values: [this.serial_number, this.content_description, this.weight, this.volume, this.worth, this.sender_id, this.recipient_id, this.expedition_id]
-    };
+    const connection = await client;
+    const preparedQuery = [
+      'INSERT INTO package (serial_number, content_description, weight, volume, worth, sender_id, recipient_id, expedition_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [this.serial_number, this.content_description, this.weight, this.volume, this.worth, this.sender_id, this.recipient_id, this.expedition_id]
+    ];
 
     try {
-      const results = await client.query(preparedQuery);
-      this.id = results.rows[0].id;
+      const [result, _] = await connection.query(...preparedQuery);
+      this.id = result.insertId;
 
       return this.id;
     } catch(err) {
@@ -111,25 +112,27 @@ class Package extends CoreModel {
   }
 
   async update() {
-    const preparedQuery = {
-      text: 'UPDATE "package" SET ("serial_number", "content_description", "weight", "volume", "worth", "sender_id", "recipient_id", "expedition_id") = (?, ?, ?, ?, ?, ?, ?, ?) WHERE "id"=$9',
-      values: [this.serial_number, this.content_description, this.weight, this.volume, this.worth, this.sender_id, this.recipient_id, this.expedition_id, this.id]
-    };
+    const connection = await client;
+    const preparedQuery = [
+      'UPDATE package SET serial_number = ?, content_description = ?, weight = ?, volume = ?, worth = ?, sender_id = ?, recipient_id = ?, expedition_id = ? WHERE id=?',
+      [this.serial_number, this.content_description, this.weight, this.volume, this.worth, this.sender_id, this.recipient_id, this.expedition_id, this.id]
+    ];
 
     try {
-      const results = await client.query(preparedQuery);
+      const [result, _] = await connection.query(...preparedQuery);
 
-      return (results.rowCount > 0) ? true : false;
+      return (result.changedRows > 0) ? true : false;
     } catch(err) {
       throw err;
     }
   }
 
   async delete() {
+    const connection = await client;
     try {
-      const results = await client.query('DELETE FROM "package" WHERE "id"=?', [this.id]);
+      const [result, _] = await connection.query('DELETE FROM package WHERE id=?', [this.id]);
 
-      return (results.rowCount > 0) ? true : false;
+      return (result.affectedRows > 0) ? true : false;
     } catch(err) {
       throw err;
     }

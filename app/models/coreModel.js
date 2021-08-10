@@ -7,20 +7,22 @@ const { client } = require("../database");
 
 class CoreModel {
   static async findAll() {
+    const connection = await client;
     try {
-      const elements = await client.query(`SELECT * FROM ${this.tableName}`);
+      const [elements, _] = await connection.query(`SELECT * FROM ${this.tableName}`);
 
-      return elements.rows;
+      return elements;
     } catch(err) {
       throw err;
     }
   }
 
   static async findById(id) {
+    const connection = await client;
     try {
-      const element = await client.query(`SELECT * FROM ${this.tableName} WHERE id= ?`, [id]);
+      const [elements, _] = await connection.query(`SELECT * FROM ${this.tableName} WHERE id= ?`, [id]);
 
-      return element.rows[0];
+      return elements[0];
     } catch(err) {
       throw err;
     }

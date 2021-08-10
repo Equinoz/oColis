@@ -75,14 +75,15 @@ class Place extends CoreModel {
   }
 
   async insert() {
-    const preparedQuery = {
-      text: 'INSERT INTO "place" ("reference", "name", "address", "additional", "postal_code", "city") VALUES (?, ?, ?, ?, ?, ?) RETURNING "id"',
-      values: [this.reference, this.name, this.address, this.additional, this.postal_code, this.city]
-    };
+    const connection = await client;
+    const preparedQuery = [
+      'INSERT INTO place (reference, name, address, additional, postal_code, city) VALUES (?, ?, ?, ?, ?, ?)',
+      [this.reference, this.name, this.address, this.additional, this.postal_code, this.city]
+    ];
 
     try {
-      const results = await client.query(preparedQuery);
-      this.id = results.rows[0].id;
+      const [result, _] = await connection.query(...preparedQuery);
+      this.id = result.insertId;
 
       return this.id;
     } catch(err) {
@@ -91,30 +92,32 @@ class Place extends CoreModel {
   }
 
   async update() {
-    const preparedQuery = {
-      text: 'UPDATE "place" SET ("reference", "name", "address", "additional", "postal_code", "city") = (?, ?, ?, ?, ?, ?) WHERE "id"=?',
-      values: [this.reference, this.name, this.address, this.additional, this.postal_code, this.city, this.id]
-    };
+    const connection = await client;
+    const preparedQuery = [
+      'UPDATE place SET reference = ?, name = ?, address = ?, additional = ?, postal_code = ?, city = ? WHERE id=?',
+      [this.reference, this.name, this.address, this.additional, this.postal_code, this.city, this.id]
+    ];
 
     try {
-      const results = await client.query(preparedQuery);
+      const [result, _] = await connection.query(...preparedQuery);
 
-      return (results.rowCount > 0) ? true : false;
+      return (result.changedRows > 0) ? true : false;
     } catch(err) {
       throw err;
     }
   }
 
   async delete() {
+    const connection = await client;
     try {
       // SQL transactions
-      await client.query('BEGIN');
+      await connection.query('BEGIN');
       // References to the places table must be removed from the packages table
-      await client.query('DELETE FROM "package" WHERE "sender_id"=? OR "recipient_id"=?', [this.id]);
-      const results = await client.query('DELETE FROM "place" WHERE "id"=?', [this.id]);
-      await client.query('COMMIT');
+      await connection.query('DELETE FROM package WHERE sender_id=? OR recipient_id=?', [this.id, this.id]);
+      const [result, _] = await connection.query('DELETE FROM place WHERE id=?', [this.id]);
+      await connection.query('COMMIT');
 
-      return (results.rowCount > 0) ? true : false;
+      return (result.affectedRows > 0) ? true : false;
     } catch(err) {
       throw err;
     }

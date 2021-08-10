@@ -55,14 +55,15 @@ class Expedition extends CoreModel {
   }
 
   async insert() {
-    const preparedQuery = {
-      text: 'INSERT INTO "expedition" ("driver_name", "vehicle_plate", "starting_time", "ending_time") VALUES (?, ?, ?, ?) RETURNING "id"',
-      values: [this.driver_name, this.vehicle_plate, this.starting_time, this.ending_time]
-    };
+    const connection = await client;
+    const preparedQuery = [
+      'INSERT INTO expedition (driver_name, vehicle_plate, starting_time, ending_time) VALUES (?, ?, ?, ?)',
+      [this.driver_name, this.vehicle_plate, this.starting_time, this.ending_time]
+    ];
 
     try {
-      const results = await client.query(preparedQuery);
-      this.id = results.rows[0].id;
+      const [result, _] = await connection.query(...preparedQuery);
+      this.id = result.insertId;
 
       return this.id;
     } catch(err) {
@@ -71,30 +72,32 @@ class Expedition extends CoreModel {
   }
 
   async update() {
-    const preparedQuery = {
-      text: 'UPDATE "expedition" SET ("driver_name", "vehicle_plate", "starting_time", "ending_time") = (?, ?, ?, ?) WHERE "id"=?',
-      values: [this.driver_name, this.vehicle_plate, this.starting_time, this.ending_time, this.id]
-    };
+    const connection = await client;
+    const preparedQuery = [
+      'UPDATE expedition SET driver_name = ?, vehicle_plate = ?, starting_time = ?, ending_time = ? WHERE id=?',
+      [this.driver_name, this.vehicle_plate, this.starting_time, this.ending_time, this.id]
+    ];
 
     try {
-      const results = await client.query(preparedQuery);
+      const [result, _] = await connection.query(...preparedQuery);
 
-      return (results.rowCount > 0) ? true : false;
+      return (result.changedRows > 0) ? true : false;
     } catch(err) {
       throw err;
     }
   }
 
   async delete() {
+    const connection = await client;
     try {
       // SQL transactions
-      await client.query('BEGIN');
+      await connection.query('BEGIN');
       // References to the expeditions table must be removed from the packages table
-      await client.query('DELETE FROM "package" WHERE "expedition_id"=?', [this.id]);
-      const results = await client.query('DELETE FROM "expedition" WHERE "id"=?', [this.id]);
-      await client.query('COMMIT');
+      await connection.query('DELETE FROM package WHERE expedition_id=?', [this.id]);
+      const [result, _] = await connection.query('DELETE FROM expedition WHERE id=?', [this.id]);
+      await connection.query('COMMIT');
 
-      return (results.rowCount > 0) ? true : false;
+      return (result.affectedRows > 0) ? true : false;
     } catch(err) {
       throw err;
     }
