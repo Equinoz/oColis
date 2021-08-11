@@ -27,7 +27,7 @@ const userController = {
 
     // Check the password's complexity
     if (datas.password && !userController._passwordRegex.test(datas.password)) {
-      return "Password must be too strong";
+      return "Password isn't strong enough: must contain at least 8 characters, including: uppercase, lowercase, number and special character";
     }
 
     return false;
@@ -66,8 +66,8 @@ const userController = {
   createUser: async (req, res, next) => {
     try {
       if (!req.body.email || !req.body.password) {
-          res.status(400).send({ error: "Invalid keys" });
-          return;
+        res.status(400).send({ error: "Invalid request: email and password fields are required" });
+        return;
       }
 
       const error = await userController._checkDatas(req.body);
@@ -149,6 +149,7 @@ const userController = {
   loginUser: async (req, res, next) => {
     if (!req.body.email || !req.body.password) {
         res.status(400).send({ error: "Invalid keys" });
+        return;
     }
     const { email, password } = { ...req.body };
 
@@ -158,6 +159,7 @@ const userController = {
 
       if (!user || !validPassword) {
         res.status(401).end();
+        return;
       } else {
         res.status(200).json({
           data: {
@@ -171,9 +173,10 @@ const userController = {
             )
           }
         });
+        return;
       }
+      res.status(400).send({ error: "Invalid keys" });
     } catch(err) {
-      console.log(err)
       next(err);
     }
   },

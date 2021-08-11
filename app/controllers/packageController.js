@@ -3,9 +3,27 @@
  * @description This module provide packages controller
  */
 
-const { Package } = require("../models");
+const { Package, Expedition, Place } = require("../models");
 
 const packageController = {
+  _checkForeignKeys: async ({ sender_id, recipient_id, expedition_id }) => {
+    let error = null;
+
+    if (sender_id && ! await Place.findById(sender_id)) {
+      error = `Invalid request: place with id ${sender_id} doesn't exist. Maybe you should create it`;
+    }
+
+    if (recipient_id && ! await Place.findById(recipient_id)) {
+      error = `Invalid request: place with id ${recipient_id} doesn't exist. Maybe you should create it`;
+    }
+
+    if (expedition_id && ! await Expedition.findById(expedition_id)) {
+      error = `Invalid request: expedition with id ${expedition_id} doesn't exist. Maybe you should create it`;
+    }
+
+    return error;
+  },
+
   getAllPackages: async (_, res, next) => {
     try {
       const packages = await Package.findAll();
@@ -38,6 +56,17 @@ const packageController = {
 
   createPackage: async (req, res, next) => {
     try {
+      if (!req.body.serial_number || !req.body.content_description || !req.body.weight || !req.body.volume || !req.body.worth || !req.body.sender_id || !req.body.recipient_id || !req.body.expedition_id) {
+        res.status(400).send({ error: "Invalid request: all the fields are required" });
+        return;
+      }
+
+      const error = await packageController._checkForeignKeys(req.body);
+      if (error) {
+        res.status(400).send({ error });
+        return;
+      }
+
       const package = new Package(req.body);
       const newPackageId = await package.insert();
       res.status(201).json({ data: newPackageId });
@@ -51,6 +80,12 @@ const packageController = {
       let packageId = parseInt(req.params.id, 10);
       packageId = (isNaN(packageId)) ? null : packageId;
       let package = await Package.findById(packageId);
+
+      const error = await packageController._checkForeignKeys(req.body);
+      if (error) {
+        res.status(400).send({ error });
+        return;
+      }
 
       if (package == undefined) {
         next();

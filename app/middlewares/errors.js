@@ -8,7 +8,6 @@ const error404 = (_, res) => {
 };
 
 const error500 = (err, _, res, __) => {
-  console.log(err)
   res.status(500).json({ error: err });
 };
 

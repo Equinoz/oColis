@@ -38,6 +38,11 @@ const expeditionController = {
 
   createExpedition: async (req, res, next) => {
     try {
+      if (!req.body.driver_name || !req.body.vehicle_plate || !req.body.starting_time) {
+        res.status(400).send({ error: "Invalid request: drive name, vehicle plate and starting time are required" });
+        return;
+      }
+
       const expedition = new Expedition(req.body);
       const newExpeditionId = await expedition.insert();
       res.status(201).json({ data: newExpeditionId });
