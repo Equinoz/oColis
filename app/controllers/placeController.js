@@ -41,6 +41,9 @@ const placeController = {
       if (!req.body.reference || !req.body.name || !req.body.address || !req.body.postal_code || !req.body.city) {
         res.status(400).send({ error: "Invalid request: reference, name, address, postal code and city fields are required" });
         return;
+      } else if (!Number.isInteger(req.body.postal_code)) {
+        res.status(400).send({ error: "Postal code must be an integer" });
+        return;
       }
 
       const place = new Place(req.body);
@@ -53,6 +56,11 @@ const placeController = {
 
   updatePlaceById: async (req, res, next) => {
     try {
+      if (req.body.postal_code && !Number.isInteger(req.body.postal_code)) {
+        res.status(400).send({ error: "Postal code must be an integer" });
+        return;
+      }
+
       let placeId = parseInt(req.params.id, 10);
       placeId = (isNaN(placeId)) ? null : placeId;
       let place = await Place.findById(placeId);

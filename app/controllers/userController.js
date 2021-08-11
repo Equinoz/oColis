@@ -11,26 +11,32 @@ const userController = {
   _emailRegex: /^\w+@\w+\.\w+$/,
   _passwordRegex: /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)(?=.*?[#?!@$%^&*-]).{8,}/,
 
-  _checkDatas: async datas => {
-    if (datas.email) {
+  _checkDatas: async ({ email, password, status_id }) => {
+    let error = null;
+
+    if (email) {
       // Check the email's validity
-      if (!userController._emailRegex.test(datas.email)) {
-        return "Mail address must be valid";
+      if (!userController._emailRegex.test(email)) {
+        error = "Mail address must be valid";
       }
 
       // Check if mail address is already in use
-      const existingUser = await User.findByMail(datas.email);
+      const existingUser = await User.findByMail(email);
       if (existingUser) {
-        return "Mail address already in use";
+        error = "Mail address already in use";
       }
     }
 
     // Check the password's complexity
-    if (datas.password && !userController._passwordRegex.test(datas.password)) {
-      return "Password isn't strong enough: must contain at least 8 characters, including: uppercase, lowercase, number and special character";
+    if (password && !userController._passwordRegex.test(password)) {
+      error = "Password isn't strong enough: must contain at least 8 characters, including: uppercase, lowercase, number and special character";
     }
 
-    return false;
+    if (status_id && !Number.isInteger(status_id)) {
+      error = "Status id must be an integer";
+    }
+
+    return error;
   },
 
   getAllUsers: async (_, res, next) => {

@@ -18,8 +18,12 @@ class Expedition extends CoreModel {
     super(obj);
     this.#driver_name = obj.driver_name;
     this.#vehicle_plate = obj.vehicle_plate;
-    this.#starting_time = obj.starting_time;
-    this.#ending_time = obj.ending_time;
+    this.#starting_time = this.#convertTimestamp(obj.starting_time);
+    this.#ending_time = this.#convertTimestamp(obj.ending_time);
+  }
+
+  #convertTimestamp(timestamp) {
+    return (timestamp !== null) ? new Date(timestamp).toJSON().split(".")[0].replace("T", " ") : null;
   }
 
   get driver_name() {

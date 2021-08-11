@@ -35,8 +35,8 @@ CREATE TABLE expedition (
   id int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   driver_name text NOT NULL,
   vehicle_plate text NOT NULL,
-  starting_time timestamp NOT NULL,
-  ending_time timestamp
+  starting_time timestamp NULL,
+  ending_time timestamp NULL
 );
 
 CREATE TABLE package (

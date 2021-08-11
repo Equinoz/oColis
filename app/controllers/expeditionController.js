@@ -6,6 +6,18 @@
 const { Expedition } = require("../models");
 
 const expeditionController = {
+  _ckeckTimestamps: datas => {
+    let error = null;
+
+    ["starting_time", "ending_time"].forEach(key => {
+      if (datas[key] && new Date(datas[key]).toString() === "Invalid Date") {
+        error = `${key.slice(0,1).toUpperCase() + key.slice(1,)} must be a valid timestamp`;
+      }
+    });
+
+    return error;
+  },
+
   getAllExpeditions: async (_, res, next) => {
     try {
       const expeditions = await Expedition.findAll();
@@ -38,8 +50,13 @@ const expeditionController = {
 
   createExpedition: async (req, res, next) => {
     try {
-      if (!req.body.driver_name || !req.body.vehicle_plate || !req.body.starting_time) {
-        res.status(400).send({ error: "Invalid request: drive name, vehicle plate and starting time are required" });
+      if (!req.body.driver_name || !req.body.vehicle_plate) {
+        res.status(400).send({ error: "Invalid request: driver name and vehicle plate are required" });
+        return;
+      }
+      const error = expeditionController._ckeckTimestamps(req.body);
+      if (error) {
+        res.status(400).send({ error });
         return;
       }
 
@@ -53,6 +70,12 @@ const expeditionController = {
 
   updateExpeditionById: async (req, res, next) => {
     try {
+      const error = expeditionController._ckeckTimestamps(req.body);
+      if (error) {
+        res.status(400).send({ error });
+        return;
+      }
+
       let expeditionId = parseInt(req.params.id, 10);
       expeditionId = (isNaN(expeditionId)) ? null : expeditionId;
       let expedition = await Expedition.findById(expeditionId);

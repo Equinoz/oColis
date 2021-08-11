@@ -6,19 +6,31 @@
 const { Package, Expedition, Place } = require("../models");
 
 const packageController = {
-  _checkForeignKeys: async ({ sender_id, recipient_id, expedition_id }) => {
+  _checkDatas: async datas => {
     let error = null;
 
-    if (sender_id && ! await Place.findById(sender_id)) {
-      error = `Invalid request: place with id ${sender_id} doesn't exist. Maybe you should create it`;
+    ["weight", "volume", "worth", "sender_id", "recipient_id", "expedition_id"].forEach(key => {
+      if (datas[key] && !Number.isInteger(datas[key])) {
+        error = `${key.slice(0,1).toUpperCase() + key.slice(1,)} must be an integer`;
+      }
+    });
+
+    // ["sender_id", "recipient_id"].forEach(key => {
+    //   if (datas[key] && ! await Place.findById(datas[key])) {
+    //     error = `Invalid request: place with id ${datas[key]} doesn't exist. Maybe you should create it`;
+    //   }
+    // });
+
+    if (datas.sender_id && ! await Place.findById(datas.sender_id)) {
+      error = `Invalid request: place with id ${datas.sender_id} doesn't exist. Maybe you should create it`;
     }
 
-    if (recipient_id && ! await Place.findById(recipient_id)) {
-      error = `Invalid request: place with id ${recipient_id} doesn't exist. Maybe you should create it`;
+    if (datas.recipient_id && ! await Place.findById(datas.recipient_id)) {
+      error = `Invalid request: place with id ${datas.recipient_id} doesn't exist. Maybe you should create it`;
     }
 
-    if (expedition_id && ! await Expedition.findById(expedition_id)) {
-      error = `Invalid request: expedition with id ${expedition_id} doesn't exist. Maybe you should create it`;
+    if (datas.expedition_id && ! await Expedition.findById(datas.expedition_id)) {
+      error = `Invalid request: expedition with id ${datas.expedition_id} doesn't exist. Maybe you should create it`;
     }
 
     return error;
@@ -61,7 +73,7 @@ const packageController = {
         return;
       }
 
-      const error = await packageController._checkForeignKeys(req.body);
+      const error = await packageController._checkDatas(req.body);
       if (error) {
         res.status(400).send({ error });
         return;
@@ -81,7 +93,7 @@ const packageController = {
       packageId = (isNaN(packageId)) ? null : packageId;
       let package = await Package.findById(packageId);
 
-      const error = await packageController._checkForeignKeys(req.body);
+      const error = await packageController._checkDatas(req.body);
       if (error) {
         res.status(400).send({ error });
         return;
