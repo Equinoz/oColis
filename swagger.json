@@ -2,7 +2,7 @@
   "openapi": "3.0.1",
   "info": {
     "title": "ocolis",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In quis aliquam neque. Maecenas non pretium quam. Etiam sapien metus, bibendum eget neque nec, luctus maximus lacus. Vestibulum bibendum ipsum at ante mollis, id tristique massa eleifend. Etiam eu ipsum eros. Fusce ac fringilla ligula. Aenean fermentum augue nisl, eu congue tellus fermentum ut. Sed sodales, est vel sagittis faucibus, lorem velit rutrum tellus, vitae sagittis ex erat nec odio. Nam consequat libero in ante feugiat, nec ornare nunc hendrerit.",
+    "description": "Ocolis est une API REST fictive permettant de gérer des livraisons de colis. Pour accéder à toutes les routes de l'API il est nécessaire de s'inscrire avec une requête \"POST /user\" puis de se connecter avec une requête \"POST /user/login\". Une fois connecté on obtient un token qu'il faut renseigner en cliquant sur le bouton \"Authorize\" en haut à droite de la page. Seul le token doit être renseigné (il ne faut pas mettre \"bearer\" devant)<br />Afin de permettre la manipulation de l'API sans inscription préalable, j'ai intentionnellement laissé certaines requêtes \"GET\" non protégées. Dans le cas d'une application fonctionnant réellement en production, toutes les routes devraient être protégées à part celles concernant l'inscription et la connexion<br />Le MCD du projet est consultable à <a href='http://localhost:7070/ocolis.svg'>cette adresse</a> au format SVG et vous pouvez retrouver le code source de l'API sur <a href='https://github.com/Equinoz/oColis'>Github</a>",
     "version": "1.0.0"
   },
   "externalDocs": {

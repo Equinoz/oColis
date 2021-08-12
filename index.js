@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 5000,
       HOST = process.env.HOST || "localhost";
 
 app.use(express.json())
+  .use(express.static("public"))
   .use(router)
   .use(errors.error404)
   .use(errors.error500);
