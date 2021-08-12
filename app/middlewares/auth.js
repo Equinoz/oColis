@@ -7,9 +7,15 @@ const jwt = require("jsonwebtoken"),
       { User, Token } = require("../models");
 
 const auth = async (req, res, next) => {
-  const token = req.headers.authorization;
-
   try {
+    if (!req.headers.authorization) {
+      const error = new Error();
+      error.name = "JsonWebTokenError";
+      throw error;
+    }
+
+    const token = req.headers.authorization.split(' ')[1];
+
     // Check if the token isn't in the blacklist
     if (await Token.exists(token)) {
       throw "Token already used";

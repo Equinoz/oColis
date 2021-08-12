@@ -1,0 +1,1391 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ocolis",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In quis aliquam neque. Maecenas non pretium quam. Etiam sapien metus, bibendum eget neque nec, luctus maximus lacus. Vestibulum bibendum ipsum at ante mollis, id tristique massa eleifend. Etiam eu ipsum eros. Fusce ac fringilla ligula. Aenean fermentum augue nisl, eu congue tellus fermentum ut. Sed sodales, est vel sagittis faucibus, lorem velit rutrum tellus, vitae sagittis ex erat nec odio. Nam consequat libero in ante feugiat, nec ornare nunc hendrerit.",
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "description": "Plus d'information concernant Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:7070"
+    }
+  ],
+  "tags": [
+    {
+      "name": "utilisateurs",
+      "description": "Inscription, connexion, déconnexion et gestion des utilisateurs"
+    },
+    {
+      "name": "adresses",
+      "description": "Create, Read, Update et Delete pour les adresses"
+    },
+    {
+      "name": "colis",
+      "description": "Create, Read, Update et Delete pour les colis"
+    },
+    {
+      "name": "expéditions",
+      "description": "Create, Read, Update et Delete pour les expéditions"
+    }
+  ],
+  "paths": {
+    "/user": {
+      "get": {
+        "tags": [
+          "utilisateurs"
+        ],
+        "summary": "Récupère tout les utilisateurs stockés en base de données",
+        "operationId": "getAllUsers",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succès de la requête",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {},
+                  "example": {
+                    "id": 3,
+                    "email": "gordon.hill@gmail.com",
+                    "status": "user"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          },
+          "404": {
+            "description": "Aucun utilisateur stocké en base de données"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "utilisateurs"
+        ],
+        "summary": "Création d'un nouvel utilisateur",
+        "operationId": "createUser",
+        "requestBody": {
+          "description": "Informations concernant le nouvel utilisateur. Le mail doit être valide et unique, le mot de passe doit contenir au moins 8 lettres dont une majuscule, une minuscule, un chiffre et un caractère spécial. Les deux champs sont requis",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Utilisateur crée. Renvoie l'id du nouvel utilisateur",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "example": 4
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Echec de la requête. Le mail indiqué est déjà utilisé ou invalide, un des deux champs obligatoires est manquant ou le mot de passe n'est pas suffisamment complexe"
+          }
+        }
+      }
+    },
+    "/user/{userId}": {
+      "get": {
+        "tags": [
+          "utilisateurs"
+        ],
+        "summary": "Récupère un utilisateur selon son id",
+        "operationId": "getUserById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id de l'utilisateur recherché",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succès de la requête",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "id": 2,
+                    "email": "irene.Carroll@gmail.com",
+                    "status": "admin"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          },
+          "404": {
+            "description": "Utilisateur inexistant/Id incorrect"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "utilisateurs"
+        ],
+        "summary": "Modifie un utilisateur selon son id",
+        "operationId": "updateUserById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id de l'utilisateur à modifier",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Nouvelles informations pour l'utilisateur indiqué. Le mail doit être valide et unique, le mot de passe doit contenir au moins 8 lettres dont une majuscule, une minuscule, un chiffre et un caractère spécial",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  },
+                  "status_id": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succès de la requête. L'attribut \"modified\" permet d'indiquer si le changement a été effectif ou non",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "modified": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Echec de la requête. Le mail indiqué est déjà utilisé ou invalide, le mot de passe n'est pas suffisamment complexe ou le status_id n'est pas un entier"
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          },
+          "403": {
+            "description": "Opération réservée aux administrateurs ou utilisateur non autorisé à modifier son propre statut"
+          },
+          "404": {
+            "description": "Utilisateur inexistant/Id incorrect"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "utilisateurs"
+        ],
+        "summary": "Supprime un utilisateur selon son id",
+        "operationId": "deleteUserById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id de l'utilisateur à supprimer",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succès de la requête. L'attribut \"deleted\" permet d'indiquer si le changement a été effectif ou non",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "deleted": true
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          },
+          "403": {
+            "description": "Utilisateur non autorisé à supprimer un autre profil que le sien"
+          },
+          "404": {
+            "description": "Utilisateur inexistant/Id incorrect"
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "utilisateurs"
+        ],
+        "summary": "Connexion utilisateur",
+        "operationId": "loginUser",
+        "requestBody": {
+          "description": "Informations de connexion pour l'utilisateur. Les deux champs sont requis",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Succès de la requête. Renvoie l'id de l'utilisateur connecté ainsi qu'un token permettant la connexion via \"bearer token\"",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "userId": 3,
+                    "token": "eyJherkoOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJTdGF0dXNfaWQiOjEsImlhdCI6MTYyODY5NDYzNH7.7GuaybGOWv0xldvnOGVBM-vOiSn5wN9HcRRJi4Xh67Q"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Echec de la requête. Au moins un des deux champs obligatoires est manquant"
+          },
+          "401": {
+            "description": "Les informations de connexion ne sont pas valides ou l'utilisateur n'existe pas"
+          }
+        }
+      }
+    },
+    "/user/logout": {
+      "get": {
+        "tags": [
+          "utilisateurs"
+        ],
+        "summary": "Déconnexion utilisateur",
+        "operationId": "logoutUser",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Succès de la requête, utilisateur déconnecté"
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          }
+        }
+      }
+    },
+    "/place": {
+      "get": {
+        "tags": [
+          "adresses"
+        ],
+        "summary": "Récupère toutes les adresses stockées en base de données",
+        "operationId": "getAllPlaces",
+        "responses": {
+          "200": {
+            "description": "Succès de la requête",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Place"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Aucune adresse stockée en base de données"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "adresses"
+        ],
+        "summary": "Création d'une nouvelle adresse",
+        "operationId": "createPlace",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Informations concernant la nouvelle adresse. Seul le champ \"additional\" est optionnel, \"postal_code\" doit être un entier",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "name": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "address": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "additional": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "postal_code": {
+                    "type": "number",
+                    "format": "int64"
+                  },
+                  "city": {
+                    "type": "string",
+                    "format": "byte"
+                  }
+                },
+                "required": [
+                  "reference",
+                  "name",
+                  "address",
+                  "postal_code",
+                  "city"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Adresse crée. Renvoie l'id de la nouvelle adresse",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "example": 4
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Echec de la requête. Un des champs obligatoires est manquant ou le code postal n'est pas un entier"
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          }
+        }
+      }
+    },
+    "/place/{placeId}": {
+      "get": {
+        "tags": [
+          "adresses"
+        ],
+        "summary": "Récupère une adresse selon son id",
+        "operationId": "getPlaceById",
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "description": "Id de l'adresse recherchée",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succès de la requête",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Place"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Adresse inexistante/Id incorrect"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "adresses"
+        ],
+        "summary": "Modifie une adresse selon son id",
+        "operationId": "updatePlaceById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "description": "Id de l'adresse à modifier",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Nouvelles informations pour l'adresse indiquée. \"postal_code\" doit être un entier",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "name": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "address": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "additional": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "postal_code": {
+                    "type": "number",
+                    "format": "int64"
+                  },
+                  "city": {
+                    "type": "string",
+                    "format": "byte"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succès de la requête. L'attribut \"modified\" permet d'indiquer si le changement a été effectif ou non",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "modified": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Echec de la requête. Le code postal doit être un entier"
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          },
+          "404": {
+            "description": "Adresse inexistante/Id incorrect"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "adresses"
+        ],
+        "summary": "Supprime une adresse selon son id",
+        "operationId": "deletePlaceById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "placeId",
+            "in": "path",
+            "description": "Id de l'adresse à supprimer",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succès de la requête. L'attribut \"deleted\" permet d'indiquer si le changement a été effectif ou non",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "deleted": true
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          },
+          "404": {
+            "description": "Adresse inexistante/Id incorrect"
+          }
+        }
+      }
+    },
+    "/package": {
+      "get": {
+        "tags": [
+          "colis"
+        ],
+        "summary": "Récupère tous les colis stockés en base de données",
+        "operationId": "getAllPackages",
+        "responses": {
+          "200": {
+            "description": "Succès de la requête",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Package"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Aucun colis stocké en base de données"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "colis"
+        ],
+        "summary": "Création d'un nouveau colis",
+        "operationId": "createPackage",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Informations concernant le nouveau colis. Tous les champs sont requis. \"weight\", \"volume\", \"worth\", \"sender_id\", \"recipient_id\" et \"expedition_id\" doivent être des entiers et les identifiants correspondants à \"sender_id\", \"recipient_id\" ou \"expedition_id\" doivent correspondre à une entrée en base de données",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "serial_number": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "content_description": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "weight": {
+                    "type": "number",
+                    "format": "float"
+                  },
+                  "volume": {
+                    "type": "number",
+                    "format": "int64"
+                  },
+                  "worth": {
+                    "type": "number",
+                    "format": "int64"
+                  },
+                  "sender_id": {
+                    "type": "number",
+                    "format": "int64"
+                  },
+                  "recipient_id": {
+                    "type": "number",
+                    "format": "int64"
+                  },
+                  "expedition_id": {
+                    "type": "number",
+                    "format": "int64"
+                  }
+                },
+                "required": [
+                  "serial_number",
+                  "content_description",
+                  "weight",
+                  "volume",
+                  "worth",
+                  "sender_id",
+                  "recipient_id",
+                  "expedition_id"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Colis crée. Renvoie l'id du nouveau collis",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "example": 4
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Echec de la requête. Un des champs est manquant, \"weight\", \"volume\", \"worth\", \"sender_id\", \"recipient_id\" ou \"expedition_id\" n'est pas un entier ou l'identifiant correspondant à \"sender_id\", \"recipient_id\" ou \"expedition_id\" ne correspond à aucune entrée en base de données"
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          }
+        }
+      }
+    },
+    "/package/{packageId}": {
+      "get": {
+        "tags": [
+          "colis"
+        ],
+        "summary": "Récupère un colis selon son id",
+        "operationId": "getPackageById",
+        "parameters": [
+          {
+            "name": "packageId",
+            "in": "path",
+            "description": "Id du colis recherché",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succès de la requête",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Package"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Colis inexistant/Id incorrect"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "colis"
+        ],
+        "summary": "Modifie un colis selon son id",
+        "operationId": "updatePackageById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "packageId",
+            "in": "path",
+            "description": "Id du colis à modifier",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Nouvelles informations pour le colis indiqué. \"weight\", \"volume\", \"worth\", \"sender_id\", \"recipient_id\" et \"expedition_id\" doivent être des entiers et les identifiants correspondants à \"sender_id\", \"recipient_id\" ou \"expedition_id\" doivent correspondre à une entrée en base de données",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "serial_number": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "content_description": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "weight": {
+                    "type": "number",
+                    "format": "float"
+                  },
+                  "volume": {
+                    "type": "number",
+                    "format": "int64"
+                  },
+                  "worth": {
+                    "type": "number",
+                    "format": "int64"
+                  },
+                  "sender_id": {
+                    "type": "number",
+                    "format": "int64"
+                  },
+                  "recipient_id": {
+                    "type": "number",
+                    "format": "int64"
+                  },
+                  "expedition_id": {
+                    "type": "number",
+                    "format": "int64"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succès de la requête. L'attribut \"modified\" permet d'indiquer si le changement a été effectif ou non",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "modified": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Echec de la requête. \"weight\", \"volume\", \"worth\", \"sender_id\", \"recipient_id\" ou \"expedition_id\" n'est pas un entier ou l'identifiant correspondant à \"sender_id\", \"recipient_id\" ou \"expedition_id\" ne correspond à aucune entrée en base de données"
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          },
+          "404": {
+            "description": "Colis inexistant/Id incorrect"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "colis"
+        ],
+        "summary": "Supprime un colis selon son id",
+        "operationId": "deletePackageById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "packageId",
+            "in": "path",
+            "description": "Id du colis à supprimer",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succès de la requête. L'attribut \"deleted\" permet d'indiquer si le changement a été effectif ou non",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "deleted": true
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          },
+          "404": {
+            "description": "Colis inexistant/Id incorrect"
+          }
+        }
+      }
+    },
+    "/expedition": {
+      "get": {
+        "tags": [
+          "expéditions"
+        ],
+        "summary": "Récupère toutes les expéditions stockées en base de données",
+        "operationId": "getAllExpeditions",
+        "responses": {
+          "200": {
+            "description": "Succès de la requête",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expedition"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Aucune expédition stockée en base de données"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "expéditions"
+        ],
+        "summary": "Création d'une nouvelle expédition",
+        "operationId": "createExpedition",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Informations concernant la nouvelle expédition. Les champs \"driver_name\" et \"vehicle_plate\" sont requis.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "driver_name": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "vehicle_plate": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "starting_time": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "ending_time": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "required": [
+                  "driver_name",
+                  "vehicle_plate"
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Expédition crée. Renvoie l'id de la nouvelle expédition",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "example": 3
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Echec de la requête. Au moins un des deux champs obligatoires est manquant ou \"starting_time\"/\"ending-time\" n'est pas un timestamp valide"
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          }
+        }
+      }
+    },
+    "/expedition/{expeditionId}": {
+      "get": {
+        "tags": [
+          "expéditions"
+        ],
+        "summary": "Récupère une expédition selon son id",
+        "operationId": "getExpeditionById",
+        "parameters": [
+          {
+            "name": "expeditionId",
+            "in": "path",
+            "description": "Id de l'expédition recherchée",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succès de la requête",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expedition"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Expédition inexistante/Id incorrect"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "expéditions"
+        ],
+        "summary": "Modifie une expédition selon son id",
+        "operationId": "updateExpeditionById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "expeditionId",
+            "in": "path",
+            "description": "Id de l'expédition à modifier",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Nouvelles informations pour l'expédition indiquée",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "driver_name": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "vehicle_plate": {
+                    "type": "string",
+                    "format": "byte"
+                  },
+                  "starting_time": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "ending_time": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succès de la requête. L'attribut \"modified\" permet d'indiquer si le changement a été effectif ou non",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "modified": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Echec de la requête. \"starting_time\"/\"ending-time\" n'est pas un timestamp valide"
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          },
+          "404": {
+            "description": "Expédition inexistante/Id incorrect"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "expéditions"
+        ],
+        "summary": "Supprime une expédition selon son id",
+        "operationId": "deleteExpeditionById",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "expeditionId",
+            "in": "path",
+            "description": "Id de l'expédition à supprimer",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succès de la requête. L'attribut \"deleted\" permet d'indiquer si le changement a été effectif ou non",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "example": {
+                    "deleted": true
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Le client n'est pas authentifié, le token n'est pas valide/expiré ou l'utilisateur n'existe plus"
+          },
+          "404": {
+            "description": "Expédition inexistante/Id incorrect"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Status": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "format": "byte"
+          }
+        },
+        "xml": {
+          "name": "Status"
+        }
+      },
+      "User": {
+        "required": [
+          "id",
+          "email",
+          "password",
+          "status_id",
+          "salt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "email": {
+            "type": "string",
+            "format": "byte"
+          },
+          "password": {
+            "type": "string",
+            "format": "byte"
+          },
+          "salt": {
+            "type": "string",
+            "format": "byte"
+          },
+          "status_id": {
+            "$ref": "#/components/schemas/Status"
+          }
+        },
+        "xml": {
+          "name": "User"
+        }
+      },
+      "Place": {
+        "required": [
+          "id",
+          "reference",
+          "name",
+          "address",
+          "postal_code",
+          "city"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "reference": {
+            "type": "string",
+            "format": "byte"
+          },
+          "name": {
+            "type": "string",
+            "format": "byte"
+          },
+          "address": {
+            "type": "string",
+            "format": "byte"
+          },
+          "additional": {
+            "type": "string",
+            "format": "byte"
+          },
+          "postal_code": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "city": {
+            "type": "string",
+            "format": "byte"
+          }
+        },
+        "xml": {
+          "name": "Place"
+        }
+      },
+      "Expedition": {
+        "required": [
+          "id",
+          "driver_name",
+          "vehicle_plate"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "driver_name": {
+            "type": "string",
+            "format": "byte"
+          },
+          "vehicle_plate": {
+            "type": "string",
+            "format": "byte"
+          },
+          "starting_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ending_time": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "xml": {
+          "name": "Expedition"
+        }
+      },
+      "Package": {
+        "required": [
+          "id",
+          "serial_number",
+          "content_description",
+          "weight",
+          "volume",
+          "worth",
+          "sender_id",
+          "recipient_id",
+          "expedition_id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "serial_number": {
+            "type": "string",
+            "format": "byte"
+          },
+          "content_description": {
+            "type": "string",
+            "format": "byte"
+          },
+          "weight": {
+            "type": "integer",
+            "format": "float"
+          },
+          "volume": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "worth": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sender_id": {
+            "$ref": "#/components/schemas/Place"
+          },
+          "recipient_id": {
+            "$ref": "#/components/schemas/Place"
+          },
+          "expedition_id": {
+            "$ref": "#/components/schemas/Expedition"
+          }
+        },
+        "xml": {
+          "name": "Package"
+        }
+      },
+      "Blacklisted_token": {
+        "required": [
+          "id",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "value": {
+            "type": "string",
+            "format": "byte"
+          }
+        },
+        "xml": {
+          "name": "Blacklisted_token"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -154,7 +154,7 @@ const userController = {
   // If mail's user exists and password matches returns a web token
   loginUser: async (req, res, next) => {
     if (!req.body.email || !req.body.password) {
-        res.status(400).send({ error: "Invalid keys" });
+        res.status(400).send({ error: "Invalid request: email and password fields are required" });
         return;
     }
     const { email, password } = { ...req.body };
@@ -181,7 +181,6 @@ const userController = {
         });
         return;
       }
-      res.status(400).send({ error: "Invalid keys" });
     } catch(err) {
       next(err);
     }

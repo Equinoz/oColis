@@ -15,12 +15,6 @@ const packageController = {
       }
     });
 
-    // ["sender_id", "recipient_id"].forEach(key => {
-    //   if (datas[key] && ! await Place.findById(datas[key])) {
-    //     error = `Invalid request: place with id ${datas[key]} doesn't exist. Maybe you should create it`;
-    //   }
-    // });
-
     if (datas.sender_id && ! await Place.findById(datas.sender_id)) {
       error = `Invalid request: place with id ${datas.sender_id} doesn't exist. Maybe you should create it`;
     }
