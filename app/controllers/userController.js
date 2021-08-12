@@ -8,7 +8,7 @@ const bcrypt = require("bcrypt"),
       { User, Token } = require("../models");
 
 const userController = {
-  _emailRegex: /^\w+@\w+\.\w+$/,
+  _emailRegex: /^(\w+\.?)+@\w+\.\w+$/,
   _passwordRegex: /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?\d)(?=.*?[#?!@$%^&*-]).{8,}/,
 
   _checkDatas: async ({ email, password, status_id }) => {
@@ -188,7 +188,7 @@ const userController = {
 
   // Adding the user's token to the blacklist for logout
   logoutUser: (req, res) => {
-    const token = req.headers.authorization;
+    const token = req.headers.authorization.split(' ')[1];
     const blacklistedToken = new Token({ value: token });
     blacklistedToken.add();
 

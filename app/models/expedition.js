@@ -23,7 +23,7 @@ class Expedition extends CoreModel {
   }
 
   #convertTimestamp(timestamp) {
-    return (timestamp !== null) ? new Date(timestamp).toJSON().split(".")[0].replace("T", " ") : null;
+    return (timestamp) ? new Date(timestamp).toJSON().split(".")[0].replace("T", " ") : null;
   }
 
   get driver_name() {
